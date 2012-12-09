@@ -1,2 +1,10 @@
 *.o
 *.fasl
+lin_f
+lin_c
+linp_c
+lin_cc
+lin_d
+linp_d
+lin_ml
+lin_cl
