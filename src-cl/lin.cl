@@ -7,15 +7,15 @@
   (let ((N (array-dimension a 1))
 	(ajimax (abs(aref a i i)))
 	(maxj i))
-    (dotimes (j N)
-      (let ((aji (abs (aref a j i))))
-	(if (> aji ajimax)
-	  (setq ajimax aji)
-	  (setq maxj j))))
+    (loop for j from (1+ i) to (1- N) do
+	  (let ((aji (abs (aref a j i))))
+	    (if (> aji ajimax)
+	      (setq ajimax aji)
+	      (setq maxj j))))
     (if (/= i maxj)
       (progn
-	(dotimes (j N)
-	  (swap (aref a i j) (aref a maxj j)))
+	(loop for j from i to (1- N) do
+	      (swap (aref a i j) (aref a maxj j)))
 	(swap (aref b i) (aref b maxj))))))
 
 (defmacro mul-setf (a b)
@@ -60,8 +60,10 @@
 
 (defun main ()
   (let* ((N 1000)
-	 (a (make-array `(,N ,N) :initial-element 1.0d0))
-	 (b (make-array `(,N) :initial-element 1000.0d0)))
+	 (a (make-array `(,N ,N) :initial-element 1.0d0
+			:element-type 'double-float))
+	 (b (make-array `(,N) :initial-element 1000.0d0
+			:element-type 'double-float)))
     (dotimes (i N)
       (setf (aref a i i) 1001.0d0))
     (solve a b)
