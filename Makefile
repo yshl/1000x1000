@@ -24,28 +24,60 @@ lin_cl: src-cl/lin.cl
 
 test_f: lin_f
 	./$< | diff -u - $(SOL_F90)
-	time ./$< > /dev/null
+
 test_c: lin_c
 	./$< | diff -u - $(SOL)
-	time ./$< > /dev/null
+
 testp_c: linp_c
 	./$< | diff -u - $(SOL)
-	time ./$< > /dev/null
+
 test_cc: lin_cc
 	./$< | diff -u - $(SOL)
-	time ./$< > /dev/null
+
 test_d: lin_d
 	./$< | diff -u - $(SOL)
-	time ./$< > /dev/null
+
 testp_d: linp_d
 	./$< | diff -u - $(SOL)
-	time ./$< > /dev/null
+
 test_ml: lin_ml
 	./$< | diff -u - $(SOL)
-	time ./$< > /dev/null
+
 test_cl: lin_cl
 	sbcl --noinform --load $< | diff -ub - $(SOL)
+
+time_f: lin_f
+	time ./$< > /dev/null
+	time ./$< > /dev/null
+
+time_c: lin_c
+	time ./$< > /dev/null
+	time ./$< > /dev/null
+
+timep_c: linp_c
+	time ./$< > /dev/null
+	time ./$< > /dev/null
+
+time_cc: lin_cc
+	time ./$< > /dev/null
+	time ./$< > /dev/null
+
+time_d: lin_d
+	time ./$< > /dev/null
+	time ./$< > /dev/null
+
+timep_d: linp_d
+	time ./$< > /dev/null
+	time ./$< > /dev/null
+
+time_ml: lin_ml
+	time ./$< > /dev/null
+	time ./$< > /dev/null
+
+time_cl: lin_cl
 	time sbcl --noinform --load $< > /dev/null
+	time sbcl --noinform --load $< > /dev/null
+
 test:
 	make test_f
 	make test_c
@@ -55,6 +87,16 @@ test:
 	make testp_d
 	make test_ml
 	make test_cl
+
+time:
+	make time_f
+	make time_c
+	make timep_c
+	make time_cc
+	make time_d
+	make timep_d
+	make time_ml
+	make time_cl
 
 clean:
 	rm -f $(EXES) *.o
