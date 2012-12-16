@@ -46,7 +46,7 @@ int main()
     }
     printf("%g\n",maxerr);
     if(fabs(maxerr)>1.0e-8){
-	fprintf(stderr,"Large Error\n");
+	fprintf(stderr,"Large error\n");
 	exit(1);
     }
 

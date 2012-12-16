@@ -23,6 +23,7 @@ program test_1
     enddo
     write(*,'(e13.6)') maxerr
     if(abs(maxerr)>1.0e-8)then
+        write(0,'(A)') "Large error"
         stop 1
     endif
     deallocate(a)
