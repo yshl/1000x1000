@@ -1,35 +1,35 @@
-EXES=lin_c linp_c
+EXES=lin_array_c lin_pointer_c
 SOL=../solution.txt
 all: $(EXES)
 .PHONY: test clean
 
-lin_c: lin.c
+lin_array_c: lin_array.c
 	gcc -O3 -Wall -o $@ $^
 
-linp_c: linp.c
+lin_pointer_c: lin_pointer.c
 	gcc -O3 -Wall -o $@ $^
 
-test_c: lin_c
+test_array_c: lin_array_c
 	./$< | diff -u - $(SOL)
 
-testp_c: linp_c
+test_pointer_c: lin_pointer_c
 	./$< | diff -u - $(SOL)
 
-time_c: lin_c
+time_array_c: lin_array_c
 	time ./$< > /dev/null
 	time ./$< > /dev/null
 
-timep_c: linp_c
+time_pointer_c: lin_pointer_c
 	time ./$< > /dev/null
 	time ./$< > /dev/null
 
 test:
-	make test_c
-	make testp_c
+	make test_array_c
+	make test_pointer_c
 
 time:
-	make time_c
-	make timep_c
+	make time_array_c
+	make time_pointer_c
 
 clean:
 	rm -f $(EXES) *.o

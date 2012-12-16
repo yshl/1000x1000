@@ -1,10 +1,10 @@
 *.o
 *.fasl
 lin_f
-lin_c
-linp_c
+lin_array_c
+lin_pointer_c
 lin_cc
-lin_d
-linp_d
+lin_static_d
+lin_dynamic_d
 lin_ml
 lin_cl

@@ -1,34 +1,34 @@
-EXES=lin_d linp_d
+EXES=lin_static_d lin_dynamic_d
 SOL=../solution.txt
 all: $(EXES)
 .PHONY: test clean
 
-lin_d: lin.d
+lin_static_d: lin_static.d
 	dmd -O -release -inline -of$@ $^
-linp_d: linp.d
+lin_dynamic_d: lin_dynamic.d
 	dmd -O -release -inline -of$@ $^
 
-test_d: lin_d
+test_static_d: lin_static_d
 	./$< | diff -u - $(SOL)
 
-testp_d: linp_d
+test_dynamic_d: lin_dynamic_d
 	./$< | diff -u - $(SOL)
 
-time_d: lin_d
+time_static_d: lin_static_d
 	time ./$< > /dev/null
 	time ./$< > /dev/null
 
-timep_d: linp_d
+time_dynamic_d: lin_dynamic_d
 	time ./$< > /dev/null
 	time ./$< > /dev/null
 
 test:
-	make test_d
-	make testp_d
+	make test_static_d
+	make test_dynamic_d
 
 time:
-	make time_d
-	make timep_d
+	make time_static_d
+	make time_dynamic_d
 
 clean:
 	rm -f $(EXES) *.o
