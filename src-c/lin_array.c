@@ -3,9 +3,8 @@
 #include<math.h>
 
 #define swap(type, a, b) do{type tmp=a; a=b; b=tmp;}while(0)
-#define N 1000
 
-static void pivot(double a[N][N], double b[N], int i)
+static void pivot(int N, double a[N][N], double b[N], int i)
 {
     double ajimax=fabs(a[i][i]);
     int maxj=i, j;
@@ -25,7 +24,7 @@ static void pivot(double a[N][N], double b[N], int i)
     }
 }
 
-static void solve(double a[N][N], double b[N])
+static void solve(int N, double a[N][N], double b[N])
 {
     int i,j,k;
 
@@ -48,7 +47,7 @@ static void solve(double a[N][N], double b[N])
     for(i=0; i<N; i++){
 	double factor;
 	/* pivot */
-	pivot(a,b,i);
+	pivot(N,a,b,i);
 	/* forward */
 	factor=1.0/a[i][i];
 	for(j=i+1; j<N; j++){
@@ -73,6 +72,7 @@ static void solve(double a[N][N], double b[N])
 
 int main()
 {
+    const int N=1000;
     double (*a)[N];
     double *b;
     int i,j;
@@ -95,7 +95,7 @@ int main()
 	b[i]=1000.0;
     }
     /* solve */
-    solve(a,b);
+    solve(N,a,b);
     /* output */
     for(i=0; i<N; i++){
 	printf("%g\n",b[i]);
