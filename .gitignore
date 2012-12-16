@@ -5,7 +5,7 @@ test_1_f
 test_array_1_c
 test_pointer_1_c
 test_1_cc
-lin_static_d
+test_static_1_d
 test_dynamic_1_d
 lin_ml
 lin_cl

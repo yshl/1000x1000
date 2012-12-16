@@ -1,20 +1,20 @@
-EXES=lin_static_d test_dynamic_1_d
+EXES=test_static_1_d test_dynamic_1_d
 SOL=../solution.txt
 all: $(EXES)
 .PHONY: test clean
 
-lin_static_d: lin_static.d
+test_static_1_d: test_static_1.d lin_static.d
 	dmd -O -release -inline -of$@ $^
 test_dynamic_1_d: test_dynamic_1.d lin_dynamic.d
 	dmd -O -release -inline -of$@ $^
 
-test_static_d: lin_static_d
-	./$< | diff -u - $(SOL)
+test_static_d: test_static_1_d
+	./$<
 
 test_dynamic_d: test_dynamic_1_d
 	./$<
 
-time_static_d: lin_static_d
+time_static_d: test_static_1_d
 	time ./$< > /dev/null
 	time ./$< > /dev/null
 

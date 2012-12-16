@@ -1,8 +1,6 @@
 import std.stdio;
 import std.math;
 
-immutable int N=1000;
-
 void swap(T1)(ref T1 a, ref T1 b)
 {
     auto tmp=a;
@@ -10,7 +8,7 @@ void swap(T1)(ref T1 a, ref T1 b)
     b=tmp;
 }
 
-void pivot(double[N][] a, double[] b, int i)
+void pivot(int N)(double[N][] a, double[] b, int i)
 {
     double ajimax=abs(a[i][i]);
     int maxj=i;
@@ -27,7 +25,7 @@ void pivot(double[N][] a, double[] b, int i)
     }
 }
 
-void solve(double[N][] a, double[] b)
+void solve(int N)(double[N][] a, double[] b)
 {
     /* scale */
     foreach(i, ref ai; a){
@@ -41,7 +39,7 @@ void solve(double[N][] a, double[] b)
     }
     foreach(i; 0..a.length){
 	/* pivot */
-	pivot(a,b,i);
+	pivot!(N)(a,b,i);
 	/* forward */
 	double factor=1.0/a[i][i];
 	a[i][i+1..$]*=factor;
@@ -57,23 +55,5 @@ void solve(double[N][] a, double[] b)
 	foreach(j; i+1..ai.length){
 	    b[i]-=ai[j]*b[j];
 	}
-    }
-}
-
-void main()
-{
-    auto a=new double[N][N];
-    auto b=new double[N];
-
-    foreach(i, ref ai; a){
-	ai[]=1.0;
-	ai[i]=1001.0;
-    }
-    b[]=1000.0;
-    /* solve */
-    solve(a,b);
-    /* output */
-    foreach(bi; b){
-	writef("%g\n", bi);
     }
 }
