@@ -29,6 +29,16 @@ void pivot(double[N][] a, double[] b, int i)
 
 void solve(double[N][] a, double[] b)
 {
+    /* scale */
+    foreach(i, ref ai; a){
+	double aijmax=0.0;
+	foreach(aij; ai){
+	    aijmax=fmax(aijmax,fabs(aij));
+	}
+	double factor=1.0/aijmax;
+	ai[]*=factor;
+	b[i]*=factor;
+    }
     foreach(i; 0..a.length){
 	/* pivot */
 	pivot(a,b,i);
@@ -48,7 +58,6 @@ void solve(double[N][] a, double[] b)
 	    b[i]-=ai[j]*b[j];
 	}
     }
-
 }
 
 void main()

@@ -3,6 +3,13 @@
      (setf ,a ,b)
      (setf ,b tmp)))
 
+(defun absmax (a i j)
+  (let ((N (array-dimension a 1))
+	(ajimax (abs (aref a i j))))
+    (loop for k from (1+ j) to (1- N) do
+	  (setq ajimax (max ajimax (abs (aref a i k)))))
+    ajimax))
+
 (defun pivot (a b i)
   (let ((N (array-dimension a 1))
 	(ajimax (abs(aref a i i)))
@@ -27,6 +34,14 @@
     (loop for j from (1+ i) to (1- n) do
 	  (mul-setf (aref a i j) factor))
     (mul-setf (aref b i) factor)))
+
+(defun scale (a b)
+  (let ((N (array-dimension a 1)))
+    (loop for i from 0 to (1- N) do
+	  (setq factor (/ 1.0d0 (absmax a i 0)))
+	  (loop for j from 0 to (1- N) do
+		(mul-setf (aref a i j) factor ))
+	  (mul-setf (aref b i) factor))))
 
 (defmacro sub-setf (a b)
   `(setf ,a (- ,a ,b)))
@@ -55,6 +70,7 @@
 
 (defun solve (a b)
   (progn
+    (scale a b)
     (forward-elimination a b)
     (back-substitution a b)))
 
@@ -68,7 +84,7 @@
       (setf (aref a i i) 1001.0d0))
     (solve a b)
     (dotimes (i N)
-      (format t "~g~%" (aref b i)))))
+      (format t "~,6g~%" (aref b i)))))
 
 (main)
 (quit)

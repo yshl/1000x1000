@@ -1,5 +1,5 @@
 EXES=lin.fasl
-SOL=../solution.txt
+SOL=../solution_f90.txt
 all: $(EXES)
 .PHONY: test clean
 

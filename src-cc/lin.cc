@@ -15,6 +15,7 @@ static void pivot(vector<vector<double> > & a, vector<double> &b, size_t i)
     double ajimax=fabs(a[i][i]);
     size_t maxj=i;
     size_t N=a.size();
+
     for(size_t j=i+1; j<N; j++){
 	double aji=fabs(a[j][i]);
 	if(aji>ajimax){
@@ -28,16 +29,25 @@ static void pivot(vector<vector<double> > & a, vector<double> &b, size_t i)
     }
 }
 
-int main()
+static void solve(vector<vector<double> > &a, vector<double> &b)
 {
-    const size_t N=1000;
-    vector<vector<double> > a(N);
+    size_t N=a.size();
+
+    /* scale */
     for(size_t i=0; i<N; i++){
-	a[i].resize(N, 1.0);
-	a[i][i]=1001.0;
+	double aijmax=fabs(a[i][0]);
+	for(size_t j=0; j<N; j++){
+	    double aij=fabs(a[i][j]);
+	    if(aij>aijmax){
+		aijmax=aij;
+	    }
+	}
+	double factor=1.0/aijmax;
+	for(size_t j=0; j<N; j++){
+	    a[i][j]*=factor;
+	}
+	b[i]*=factor;
     }
-    vector<double> b(N, 1000.0);
-    /* solve */
     for(size_t i=0; i<N; i++){
 	/* pivot */
 	pivot(a,b,i);
@@ -62,6 +72,20 @@ int main()
 	    b[j]-=a[j][i]*b[i];
 	}
     }
+}
+
+int main()
+{
+    const size_t N=1000;
+    vector<vector<double> > a(N);
+    for(size_t i=0; i<N; i++){
+	a[i].resize(N, 1.0);
+	a[i][i]=1001.0;
+    }
+    vector<double> b(N, 1000.0);
+
+    solve(a,b);
+
     /* output */
     for(size_t i=0; i<N; i++){
 	cout << b[i] << endl;

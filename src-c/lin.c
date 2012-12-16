@@ -9,6 +9,7 @@ static void pivot(double a[N][N], double b[N], int i)
 {
     double ajimax=fabs(a[i][i]);
     int maxj=i, j;
+
     for(j=i+1; j<N; j++){
 	double aji=fabs(a[j][i]);
 	if(aji>ajimax){
@@ -27,6 +28,23 @@ static void pivot(double a[N][N], double b[N], int i)
 static void solve(double a[N][N], double b[N])
 {
     int i,j,k;
+
+    /* scale */
+    for(i=0; i<N; i++){
+	double aijmax=fabs(a[i][0]);
+	double factor;
+	for(j=1; j<N; j++){
+	    double aij=fabs(a[i][j]);
+	    if(aij>aijmax){
+		aijmax=aij;
+	    }
+	}
+	factor=1.0/aijmax;
+	for(j=0; j<N; j++){
+	    a[i][j]*=factor;
+	}
+	b[i]*=factor;
+    }
     for(i=0; i<N; i++){
 	double factor;
 	/* pivot */

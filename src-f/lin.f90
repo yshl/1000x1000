@@ -53,9 +53,24 @@ end subroutine
 subroutine solve(a, b)
     implicit none
     double precision, intent(inout):: a(:,:), b(:)
-    double precision :: factor
+    double precision :: aijmax, aij, factor
     integer :: i,j,N
     N=ubound(a,1)
+    ! scale
+    do i=1, N
+        aijmax=abs(a(i,1))
+        do j=2, N
+            aij=abs(a(i,j))
+            if(aij>aijmax)then
+                aijmax=aij
+            endif
+        enddo
+        factor=1.0/aijmax
+        do j=1, N
+            a(i,j)=a(i,j)*factor
+        enddo
+        b(i)=b(i)*factor
+    enddo
     do i=1, N
         ! pivot
         call pivot(a,b,i)

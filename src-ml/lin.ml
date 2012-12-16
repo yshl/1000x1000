@@ -6,6 +6,30 @@ let swap a i j =
         a
     end;;
 
+let absmax ai j=
+    let n=Array.length ai in
+    let rec absmax_rec aijmax j=
+        if j>=n then
+            aijmax
+        else
+            let aij=abs_float (ai.(j))in
+            if aij>aijmax then
+                absmax_rec aij (j+1)
+            else
+                absmax_rec aijmax (j+1) in
+    absmax_rec ai.(j) (j+1);;
+
+let scale a b=
+    let n=Array.length a in
+    for i=0 to n-1 do
+        let factor=1.0 /. absmax a.(i) 0 in
+        for j=0 to n-1 do
+            a.(i).(j) <- factor *. a.(i).(j)
+        done;
+        b.(i) <- factor *. b.(i)
+    done;
+    a,b;;
+
 let pivot a b i=
     let rec maxji j ajimax maxi=
         if j >= Array.length a
@@ -71,6 +95,7 @@ let back_substitution a b=
     back_subst_rec a b (n-1);;
 
 let solve a b=
+    let a,b=scale a b in
     let a,b=forward_elimination a b in
     back_substitution a b;;
 
