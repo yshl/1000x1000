@@ -1,15 +1,15 @@
-EXES=lin_cc
+EXES=test_1_cc
 SOL=../solution.txt
 all: $(EXES)
 .PHONY: test clean
 
-lin_cc: lin.cc
+test_1_cc: test_1.cc lin.cc
 	g++ -O3 -Wall -o $@ $^
 
-test_cc: lin_cc
-	./$< | diff -u - $(SOL)
+test_cc: test_1_cc
+	./$<
 
-time_cc: lin_cc
+time_cc: test_1_cc
 	time ./$< > /dev/null
 	time ./$< > /dev/null
 

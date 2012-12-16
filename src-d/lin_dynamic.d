@@ -57,23 +57,3 @@ void solve(double[][] a, double[] b)
 	}
     }
 }
-
-void main()
-{
-    immutable int N=1000;
-    auto a=new double[][](N,N);
-    auto b=new double[N];
-
-    foreach(i, ref ai; a){
-	ai[]=1.0;
-	ai[i]=1001.0;
-    }
-    b[]=1000.0;
-
-    /* solve */
-    solve(a,b);
-    /* output */
-    foreach(bi; b){
-	writef("%g\n", bi);
-    }
-}

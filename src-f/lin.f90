@@ -1,23 +1,5 @@
-program lin
+module lin
     implicit none
-    integer, parameter :: N=1000
-    double precision, allocatable :: a(:,:), b(:)
-    integer :: i
-    
-    allocate(a(1:N,1:N))
-    allocate(b(1:N))
-    
-    a(1:N,1:N)=1.0
-    b(1:N)=1000.0
-    do i=1, N
-        a(i,i)=1001.0
-    enddo
-    call solve(a,b)
-    do i=1, N
-        write(*,'(f8.6)') b(i)
-    enddo
-    deallocate(a)
-    deallocate(b)
 contains
 subroutine swap(a, b)
     implicit none
@@ -89,4 +71,4 @@ subroutine solve(a, b)
         b(1:i-1)=b(1:i-1)-a(1:i-1,i)*b(i)
     enddo
 end subroutine
-end
+end module

@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include"lin_array.h"
 
 #define swap(type, a, b) do{type tmp=a; a=b; b=tmp;}while(0)
 
@@ -24,7 +25,7 @@ static void pivot(int N, double a[N][N], double b[N], int i)
     }
 }
 
-static void solve(int N, double a[N][N], double b[N])
+void solve(int N, double a[N][N], double b[N])
 {
     int i,j,k;
 
@@ -68,39 +69,4 @@ static void solve(int N, double a[N][N], double b[N])
 	    b[i]-=a[i][j]*b[j];
 	}
     }
-}
-
-int main()
-{
-    const int N=1000;
-    double (*a)[N];
-    double *b;
-    int i,j;
-
-    a=malloc(sizeof(double[N])*N);
-    if(a==NULL){
-	perror("");
-	exit(1);
-    }
-    b=malloc(sizeof(double)*N);
-    if(b==NULL){
-	perror("");
-	exit(1);
-    }
-    for(i=0; i<N; i++){
-	for(j=0; j<N; j++){
-	    a[i][j]=1.0;
-	}
-	a[i][i]=1001.0;
-	b[i]=1000.0;
-    }
-    /* solve */
-    solve(N,a,b);
-    /* output */
-    for(i=0; i<N; i++){
-	printf("%g\n",b[i]);
-    }
-    free(a);
-    free(b);
-    return 0;
 }

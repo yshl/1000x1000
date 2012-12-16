@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include"lin_pointer.h"
 
 #define swap(type, a, b) do{type tmp=a; a=b; b=tmp;}while(0)
 
@@ -22,7 +23,7 @@ static void pivot(double** a, double* b, int N, int i)
     }
 }
 
-static void solve(double **a, double *b, int N)
+void solve(double **a, double *b, int N)
 {
     int i,j,k;
 
@@ -66,49 +67,4 @@ static void solve(double **a, double *b, int N)
 	    b[i]-=a[i][j]*b[j];
 	}
     }
-}
-
-int main()
-{
-    const int N=1000;
-    double **a;
-    double *b;
-    int i,j;
-
-    a=malloc(sizeof(double*)*N);
-    if(a==NULL){
-	perror("");
-	exit(1);
-    }
-    for(i=0; i<N; i++){
-	a[i]=malloc(sizeof(double)*N);
-	if(a[i]==NULL){
-	    perror("");
-	    exit(1);
-	}
-    }
-    b=malloc(sizeof(double)*N);
-    if(b==NULL){
-	perror("");
-	exit(1);
-    }
-    for(i=0; i<N; i++){
-	for(j=0; j<N; j++){
-	    a[i][j]=1.0;
-	}
-	a[i][i]=1001.0;
-	b[i]=1000.0;
-    }
-    /* solve */
-    solve(a,b,N);
-    /* output */
-    for(i=0; i<N; i++){
-	printf("%g\n",b[i]);
-    }
-    for(i=0; i<N; i++){
-	free(a[i]);
-    }
-    free(a);
-    free(b);
-    return 0;
 }

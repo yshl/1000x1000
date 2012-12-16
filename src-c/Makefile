@@ -1,25 +1,25 @@
-EXES=lin_array_c lin_pointer_c
+EXES=test_array_1_c test_pointer_1_c
 SOL=../solution.txt
 all: $(EXES)
 .PHONY: test clean
 
-lin_array_c: lin_array.c
+test_array_1_c: test_array_1.c lin_array.c
+	gcc -O3 -Wall -o $@ $^ -I.
+
+test_pointer_1_c: test_pointer_1.c lin_pointer.c
 	gcc -O3 -Wall -o $@ $^
 
-lin_pointer_c: lin_pointer.c
-	gcc -O3 -Wall -o $@ $^
+test_array_c: test_array_1_c
+	./$<
 
-test_array_c: lin_array_c
-	./$< | diff -u - $(SOL)
+test_pointer_c: test_pointer_1_c
+	./$<
 
-test_pointer_c: lin_pointer_c
-	./$< | diff -u - $(SOL)
-
-time_array_c: lin_array_c
+time_array_c: test_array_1_c
 	time ./$< > /dev/null
 	time ./$< > /dev/null
 
-time_pointer_c: lin_pointer_c
+time_pointer_c: test_pointer_1_c
 	time ./$< > /dev/null
 	time ./$< > /dev/null
 

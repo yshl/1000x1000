@@ -2,6 +2,7 @@ using namespace std;
 #include<iostream>
 #include<cmath>
 #include<vector>
+#include"lin.h"
 
 template<typename T1> void swp(T1 &a, T1 &b)
 {
@@ -29,7 +30,7 @@ static void pivot(vector<vector<double> > & a, vector<double> &b, size_t i)
     }
 }
 
-static void solve(vector<vector<double> > &a, vector<double> &b)
+void solve(vector<vector<double> > &a, vector<double> &b)
 {
     size_t N=a.size();
 
@@ -72,23 +73,4 @@ static void solve(vector<vector<double> > &a, vector<double> &b)
 	    b[j]-=a[j][i]*b[i];
 	}
     }
-}
-
-int main()
-{
-    const size_t N=1000;
-    vector<vector<double> > a(N);
-    for(size_t i=0; i<N; i++){
-	a[i].resize(N, 1.0);
-	a[i][i]=1001.0;
-    }
-    vector<double> b(N, 1000.0);
-
-    solve(a,b);
-
-    /* output */
-    for(size_t i=0; i<N; i++){
-	cout << b[i] << endl;
-    }
-    return 0;
 }
