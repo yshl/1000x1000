@@ -1,14 +1,14 @@
 import std.stdio;
 import std.math;
 
-void swap(T1)(ref T1 a, ref T1 b)
+private void swap(T1)(ref T1 a, ref T1 b)
 {
     auto tmp=a;
     a=b;
     b=tmp;
 }
 
-void pivot(int N)(double[N][] a, double[] b, int i)
+private void pivot(int N)(double[N][] a, double[] b, int i)
 {
     double ajimax=abs(a[i][i]);
     int maxj=i;
