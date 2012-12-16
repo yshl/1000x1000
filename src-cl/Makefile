@@ -6,10 +6,10 @@ all: $(EXES)
 lin.fasl: lin.cl
 	sbcl --noinform --eval "(compile-file \"$<\")" --eval "(quit)"
 
-test_cl: lin.fasl
-	sbcl --noinform --load $< | diff -ub - $(SOL)
+test_cl: test_1.cl lin.fasl
+	sbcl --noinform --load $<
 
-time_cl: lin.fasl
+time_cl: test_1.cl lin.fasl
 	time sbcl --noinform --load $< > /dev/null
 	time sbcl --noinform --load $< > /dev/null
 
@@ -20,4 +20,4 @@ time:
 	make time_cl
 
 clean:
-	rm -f $(EXES) *.o
+	rm -f $(EXES)

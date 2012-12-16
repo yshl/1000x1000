@@ -36,7 +36,8 @@
     (mul-setf (aref b i) factor)))
 
 (defun scale (a b)
-  (let ((N (array-dimension a 1)))
+  (let ((N (array-dimension a 1))
+	factor)
     (loop for i from 0 to (1- N) do
 	  (setq factor (/ 1.0d0 (absmax a i 0)))
 	  (loop for j from 0 to (1- N) do
@@ -73,18 +74,3 @@
     (scale a b)
     (forward-elimination a b)
     (back-substitution a b)))
-
-(defun main ()
-  (let* ((N 1000)
-	 (a (make-array `(,N ,N) :initial-element 1.0d0
-			:element-type 'double-float))
-	 (b (make-array `(,N) :initial-element 1000.0d0
-			:element-type 'double-float)))
-    (dotimes (i N)
-      (setf (aref a i i) 1001.0d0))
-    (solve a b)
-    (dotimes (i N)
-      (format t "~,6g~%" (aref b i)))))
-
-(main)
-(quit)
