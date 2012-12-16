@@ -4,7 +4,7 @@ all: $(EXES)
 .PHONY: test clean
 
 test_array_1_c: test_array_1.c lin_array.c
-	gcc -O3 -Wall -o $@ $^ -I.
+	gcc -O3 -Wall -o $@ $^
 
 test_pointer_1_c: test_pointer_1.c lin_pointer.c
 	gcc -O3 -Wall -o $@ $^
