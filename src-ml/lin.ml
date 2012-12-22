@@ -1,106 +1,90 @@
 module Lin = struct
     let swap a i j =
         let tmp = a.(i) in
-        begin
-            a.(i) <- a.(j);
-            a.(j) <- tmp;
-            a
-        end;;
+        a.(i)<-a.(j);
+        a.(j)<-tmp;
+        a;;
 
-    let absmax ai j=
-        let n=Array.length ai in
-        let rec absmax_rec aijmax j=
-            if j>=n then
-                aijmax
-            else
-                let aij=abs_float (ai.(j))in
-                if aij>aijmax then
-                    absmax_rec aij (j+1)
-            else
-                absmax_rec aijmax (j+1) in
-        absmax_rec ai.(j) (j+1);;
+    let arraymul a fac ibegin =
+        for i = ibegin to (Array.length a)-1 do
+            a.(i) <- fac *. a.(i)
+        done;;
 
-    let scale a b=
-        let n=Array.length a in
-        for i=0 to n-1 do
-            let factor=1.0 /. absmax a.(i) 0 in
-            for j=0 to n-1 do
-                a.(i).(j) <- factor *. a.(i).(j)
-            done;
-            b.(i) <- factor *. b.(i)
-            done;
-            a,b;;
+    let arrsub a b fac ibegin =
+        for i=ibegin to (Array.length a)-1 do
+            a.(i)<-a.(i) -. fac *. b.(i)
+        done;;
+
+    let prod a b ibegin =
+        let r = ref 0.0 in
+        for i = ibegin to (Array.length a)-1 do
+            r := !r +. a.(i) *. b.(i)
+        done;
+        !r;;
+
+    let scale_row ai j b i factor =
+        arraymul ai factor j;
+        b.(i) <- factor *. b.(i);;
+
+    let scale_array a b=
+        let absmax ai =
+            Array.fold_left (fun x aij->max x (abs_float aij)) 0.0 ai in
+        for i=0 to (Array.length a)-1 do
+            let factor = 1.0 /. (absmax a.(i)) in
+            scale_row a.(i) 0 b i factor;
+        done;
+        a,b;;
 
     let pivot a b i=
-        let rec maxji j ajimax maxi=
-            if j >= Array.length a
-            then maxi
-            else
-                (let aji=abs_float (a.(j).(i)) in
-                if (aji>ajimax)
-                then maxji (j+1) aji j
-                else maxji (j+1) ajimax maxi) in
-        let maxi=maxji (i+1) (a.(i).(i)) i in
+        let maxji a i =
+            let ajmax=ref (abs_float a.(i).(i)) in
+            let maxi=ref i in
+            for j=i+1 to (Array.length a)-1 do
+                let aji=abs_float a.(j).(i) in
+                if aji > !ajmax then
+                    ajmax := aji;
+                    maxi := j
+            done;
+            !maxi in
+        let maxi=maxji a i in
         if i==maxi then (a, b)
         else ((swap a i maxi), (swap b i maxi));;
 
-    let scale_row a b i=
-        let n = Array.length a.(i) in
+    let scale_pivot a b i=
         let factor = 1.0 /. a.(i).(i) in
-        begin
-            for j=i+1 to n-1 do
-                a.(i).(j) <- factor *. a.(i).(j) 
-        done;
-        b.(i) <- factor *. b.(i);
-        a, b
-        end;;
+        scale_row a.(i) (i+1) b i factor;
+        a, b;;
 
     let elim_col a b i=
-        let n = Array.length a in
-        begin
-            for j=i+1 to n-1 do
-                let factor = a.(j).(i) in
-                begin
-                    for k=i+1 to n-1 do
-                        a.(j).(k) <- a.(j).(k) -. factor *. a.(i).(k)
-            done;
-            b.(j) <- b.(j) -. factor *. b.(i);
-            ()
-        end
-                    done;
-                    a,b
-                end;;
+        let ai=a.(i) in
+        for j = i+1 to (Array.length a) -1 do
+            let aj = a.(j) in
+            let factor = aj.(i) in
+            arrsub aj ai factor (i+1);
+            b.(j) <- b.(j) -. factor *. b.(i)
+        done;;
 
     let forward_elimination a b=
-        let n = Array.length a in
-        let rec forward_elim_rec a b i =
-            if i >= n then (a,b)
-            else
-                let a, b=pivot a b i in
-                let a, b=scale_row a b i in
-                let a, b=elim_col a b i in
-                forward_elim_rec a b (i+1) in
-        forward_elim_rec a b 0;;
+        for i = 0 to (Array.length a)-1 do
+            let a, b=pivot a b i in
+            let a, b=scale_pivot a b i in
+            elim_col a b i
+        done;
+        a,b;;
 
     let back_substitution a b=
-        let n = Array.length b in
-        let rec back_subst_rec a b i=
-            if i<0 then b
-            else
-                begin
-                    for j=i+1 to n-1 do
-                        b.(i) <- b.(i) -. a.(i).(j) *. b.(j)
-            done;
-            back_subst_rec a b (i-1)
-        end in
-        back_subst_rec a b (n-1)
+        for i = (Array.length b)-1 downto 0 do
+            b.(i) <- b.(i) -. (prod a.(i) b (i+1))
+        done;
+        b;;
 
     let solve a b=
-        let a,b=scale a b in
+        let a,b=scale_array a b in
         let a,b=forward_elimination a b in
         back_substitution a b
-                end
+
+end
 module type Lin=
     sig
         val solve : 'float array array -> 'float array -> 'float array
-    end
+end
