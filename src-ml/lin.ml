@@ -2,13 +2,7 @@ module Lin = struct
     let swap a i j =
         let tmp = a.(i) in
         a.(i)<-a.(j);
-        a.(j)<-tmp;
-        a;;
-
-    let arraymul a fac ibegin =
-        for i = ibegin to (Array.length a)-1 do
-            a.(i) <- fac *. a.(i)
-        done;;
+        a.(j)<-tmp;;
 
     let arrsub a b fac ibegin =
         for i=ibegin to (Array.length a)-1 do
@@ -22,8 +16,10 @@ module Lin = struct
         done;
         !r;;
 
-    let scale_row ai j b i factor =
-        arraymul ai factor j;
+    let scale_row factor ai jbegin b i =
+        for j = jbegin to (Array.length ai)-1 do
+            ai.(j) <- factor *. ai.(j)
+        done;
         b.(i) <- factor *. b.(i);;
 
     let scale_array a b=
@@ -31,29 +27,31 @@ module Lin = struct
             Array.fold_left (fun x aij->max x (abs_float aij)) 0.0 ai in
         for i=0 to (Array.length a)-1 do
             let factor = 1.0 /. (absmax a.(i)) in
-            scale_row a.(i) 0 b i factor;
+            scale_row factor a.(i) 0 b i;
+        done;;
+
+    let maxji a i =
+        let ajmax=ref (abs_float a.(i).(i)) in
+        let maxi=ref i in
+        for j=i+1 to (Array.length a)-1 do
+            let aji = abs_float a.(j).(i) in
+            if aji > !ajmax then (
+                ajmax := aji;
+                maxi := j
+            )
         done;
-        a,b;;
+        !maxi;;
 
     let pivot a b i=
-        let maxji a i =
-            let ajmax=ref (abs_float a.(i).(i)) in
-            let maxi=ref i in
-            for j=i+1 to (Array.length a)-1 do
-                let aji=abs_float a.(j).(i) in
-                if aji > !ajmax then
-                    ajmax := aji;
-                    maxi := j
-            done;
-            !maxi in
-        let maxi=maxji a i in
-        if i==maxi then (a, b)
-        else ((swap a i maxi), (swap b i maxi));;
+        let maxi =maxji a i in
+        if i<>maxi then (
+            swap a i maxi;
+            swap b i maxi
+            );;
 
     let scale_pivot a b i=
         let factor = 1.0 /. a.(i).(i) in
-        scale_row a.(i) (i+1) b i factor;
-        a, b;;
+        scale_row factor a.(i) (i+1) b i;;
 
     let elim_col a b i=
         let ai=a.(i) in
@@ -66,11 +64,10 @@ module Lin = struct
 
     let forward_elimination a b=
         for i = 0 to (Array.length a)-1 do
-            let a, b=pivot a b i in
-            let a, b=scale_pivot a b i in
+            pivot a b i;
+            scale_pivot a b i;
             elim_col a b i
-        done;
-        a,b;;
+        done;;
 
     let back_substitution a b=
         for i = (Array.length b)-1 downto 0 do
@@ -79,9 +76,9 @@ module Lin = struct
         b;;
 
     let solve a b=
-        let a,b=scale_array a b in
-        let a,b=forward_elimination a b in
-        back_substitution a b
+        scale_array a b;
+        forward_elimination a b;
+        back_substitution a b;;
 
 end
 module type Lin=
