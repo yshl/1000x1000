@@ -28,14 +28,14 @@
 (defmacro mul-setf (a b)
   `(setf ,a (* ,a ,b)))
 
-(defun scale-row (a b i)
+(defun scale-pivot (a b i)
   (let ((n (array-dimension a 1))
 	(factor (/ 1.0 (aref a i i))))
     (loop for j from (1+ i) to (1- n) do
 	  (mul-setf (aref a i j) factor))
     (mul-setf (aref b i) factor)))
 
-(defun scale (a b)
+(defun scale-array (a b)
   (let ((N (array-dimension a 1))
 	factor)
     (loop for i from 0 to (1- N) do
@@ -48,6 +48,9 @@
   `(setf ,a (- ,a ,b)))
 
 (defun elim-col (a b i)
+  (declare (type (array double-float (* *)) a)
+	   (type (array double-float (*)) b)
+	   (type (integer) i))
   (let ((n (array-dimension a 0)))
     (loop for j from (1+ i) to (1- n) do
 	  (let ((aji (aref a j i)))
@@ -60,7 +63,7 @@
     (dotimes (i n)
       (progn
 	(pivot a b i)
-	(scale-row a b i)
+	(scale-pivot a b i)
 	(elim-col a b i)))))
 
 (defun back-substitution (a b)
@@ -71,6 +74,6 @@
 
 (defun solve (a b)
   (progn
-    (scale a b)
+    (scale-array a b)
     (forward-elimination a b)
     (back-substitution a b)))
