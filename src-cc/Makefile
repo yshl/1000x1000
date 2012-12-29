@@ -1,23 +1,31 @@
 EXES=test_1_cc
-SOL=../solution.txt
-all: $(EXES)
+CXX=g++
+CXXFLAGS=-O3 -Wall
+
 .PHONY: test clean
 
-test_1_cc: test_1.cc lin.cc
-	g++ -O3 -Wall -o $@ $^
+all: $(EXES)
 
-test_cc: test_1_cc
-	./$<
+.cc.o:
+	$(CXX) $(CXXFLAGS) -c $<
 
-time_cc: test_1_cc
-	time ./$< > /dev/null
-	time ./$< > /dev/null
+lin.o: lin.cc lin.h
+test_1.o: test_1.cc lin.h
+test_1_cc: test_1.o lin.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
-test:
-	make test_cc
+test: $(EXES)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    ./$$prog; \
+	done
 
-time:
-	make time_cc
+time: $(EXES)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    time ./$$prog; \
+	    time ./$$prog; \
+	done
 
 clean:
 	rm -f $(EXES) *.o

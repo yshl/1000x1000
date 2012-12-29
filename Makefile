@@ -1,34 +1,23 @@
+SUBDIRS=src-f src-c src-cc src-d src-ml src-cl scripts
 .PHONY: all test time clean
 
 all:
-	make -C src-f
-	make -C src-c
-	make -C src-cc
-	make -C src-d
-	make -C src-ml
-	make -C src-cl
+	@for subdir in $(SUBDIRS); do \
+	    make -C $$subdir; \
+	done
 
 test:
-	make -C src-f  test
-	make -C src-c  test
-	make -C src-cc test
-	make -C src-d  test
-	make -C src-ml test
-	make -C src-cl test
+	@for subdir in $(SUBDIRS); do \
+	    make -C $$subdir test; \
+	done
 
 time:
-	make -C src-f  time
-	make -C src-c  time
-	make -C src-cc time
-	make -C src-d  time
-	make -C src-ml time
-	make -C src-cl time
+	@for subdir in $(SUBDIRS); do \
+	    make -C $$subdir time; \
+	done
 
 clean:
 	rm -f $(EXES) *.o
-	make -C src-f  clean
-	make -C src-c  clean
-	make -C src-cc clean
-	make -C src-d  clean
-	make -C src-ml clean
-	make -C src-cl clean
+	@for subdir in $(SUBDIRS); do \
+	    make -C $$subdir clean; \
+	done

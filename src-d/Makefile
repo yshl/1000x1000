@@ -1,34 +1,35 @@
 EXES=test_static_1_d test_dynamic_1_d
-SOL=../solution.txt
-all: $(EXES)
+DC=dmd
+DFLAGS=-O -release -inline
+
+.SUFFIXES: .d
 .PHONY: test clean
 
-test_static_1_d: test_static_1.d lin_static.d
-	dmd -O -release -inline -of$@ $^
-test_dynamic_1_d: test_dynamic_1.d lin_dynamic.d
-	dmd -O -release -inline -of$@ $^
+all: $(EXES)
 
-test_static_d: test_static_1_d
-	./$<
+.d.o:
+	$(DC) $(DFLAGS) -c -of$@ $<
 
-test_dynamic_d: test_dynamic_1_d
-	./$<
+test_static_1.o: test_static_1.d lin_static.d
+test_dynamic_1.o: test_dynamic_1.d lin_dynamic.d
 
-time_static_d: test_static_1_d
-	time ./$< > /dev/null
-	time ./$< > /dev/null
+test_static_1_d: test_static_1.o lin_static.o
+	$(DC) $(DFLAGS) -of$@ $^
+test_dynamic_1_d: test_dynamic_1.o lin_dynamic.o
+	$(DC) $(DFLAGS) -of$@ $^
 
-time_dynamic_d: test_dynamic_1_d
-	time ./$< > /dev/null
-	time ./$< > /dev/null
+test: $(EXES)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    ./$$prog; \
+	done
 
-test:
-	make test_static_d
-	make test_dynamic_d
-
-time:
-	make time_static_d
-	make time_dynamic_d
+time: $(EXES)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    time ./$$prog; \
+	    time ./$$prog; \
+	done
 
 clean:
 	rm -f $(EXES) *.o
