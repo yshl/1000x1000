@@ -28,17 +28,15 @@ int main()
 	perror("");
 	exit(1);
     }
-    /* wilkinson's matrix */
+    /* matrix from http://www.cs.yale.edu/homes/spielman/BAP/lect6.pdf */
     for(i=0; i<N; i++){
 	for(j=0; j<i; j++){
-	    //a[i][j]=(i+j)%2?1.0:-1.0;
 	    a[i][j]=-1.0;
 	}
 	a[i][i]=1.0;
 	for(j=i+1; j<N-1; j++){
 	    a[i][j]=0.0;
 	}
-	//a[i][N-1]=i%2?-1.0:1.0;
 	a[i][N-1]=1.0;
 
 	b[i]=0.0;
