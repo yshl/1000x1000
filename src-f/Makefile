@@ -3,7 +3,10 @@ SOL=../solution_f90.txt
 all: $(EXES)
 .PHONY: test clean
 
-test_1_f: test_1.f90 lin.f90
+lin.o: lin.f90
+	gfortran -O3 -Wall -c $<
+
+test_1_f: test_1.f90 lin.o
 	gfortran -O3 -Wall -o $@ $^
 
 test_lapack_1_f: test_lapack_1.f90
