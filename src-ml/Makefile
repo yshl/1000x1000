@@ -1,23 +1,26 @@
 EXES=test_1_ml
-SOL=../solution.txt
-all: $(EXES)
+OCAMLC=ocamlopt
+OCAMLFLAGS=
+
 .PHONY: test clean
 
+all: $(EXES)
+
 test_1_ml: lin.ml test_1.ml
-	ocamlopt -o $@ $^
+	$(OCAMLC) $(OCAMLFLAGS) -o $@ $^
 
-test_ml: test_1_ml
-	./$<
+test: $(EXES)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    ./$$prog; \
+	done
 
-time_ml: test_1_ml
-	time ./$< > /dev/null
-	time ./$< > /dev/null
-
-test:
-	make test_ml
-
-time:
-	make time_ml
+time: $(EXES)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    time ./$$prog; \
+	    time ./$$prog; \
+	done
 
 clean:
 	rm -f $(EXES) *.o *.cmi *.cmx *.cmo

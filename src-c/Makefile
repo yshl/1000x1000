@@ -1,65 +1,54 @@
 EXES=test_array_1_c test_pointer_1_c test_lapack_1_c test_array_2_c test_pointer_2_c
-SOL=../solution.txt
-all: $(EXES)
+CC=gcc
+CFLAGS=-O3 -Wall
+LAPACKLIB=-lsatlas
+LAPACKINC=
+
 .PHONY: test clean
 
-test_array_1_c: test_array_1.c lin_array.c
-	gcc -O3 -Wall -o $@ $^
+all: $(EXES)
 
-test_pointer_1_c: test_pointer_1.c lin_pointer.c
-	gcc -O3 -Wall -o $@ $^
+.c.o:
+	$(CC) $(CFLAGS) -c $<
+
+lin_array.o: lin_array.c lin_array.h
+lin_pointer.o: lin_pointer.c lin_pointer.h
+lin_array_complete.o: lin_array_complete.c lin_array.h
+lin_pointer_complete.o: lin_pointer_complete.c lin_pointer.h
+test_array_1.o: test_array_1.c lin_array.h
+test_pointer_1.o: test_pointer_1.c lin_pointer.h
+test_array_2.o: test_array_2.c lin_array.h
+test_pointer_2.o: test_pointer_2.c lin_pointer.h
+test_lapack_1.o: test_lapack_1.c
+	$(CC) $(CFLAGS) -o $@ $< $(LAPACKINC)
+
+test_array_1_c: test_array_1.o lin_array.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+test_pointer_1_c: test_pointer_1.o lin_pointer.o
+	$(CC) $(CFLAGS) -o $@ $^
 
 test_lapack_1_c: test_lapack_1.c
-	gcc -O3 -Wall -o $@ $^ -lsatlas
+	$(CC) $(CFLAGS) -o $@ $^ $(LAPACKLIB)
 
-test_array_2_c: test_array_2.c lin_array_complete.c
-	gcc -O3 -Wall -o $@ $^ -lm
+test_array_2_c: test_array_2.o lin_array_complete.o
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
-test_pointer_2_c: test_pointer_2.c lin_pointer_complete.c
-	gcc -O3 -Wall -o $@ $^ -lm
+test_pointer_2_c: test_pointer_2.o lin_pointer_complete.o
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
-test_array_c: test_array_1_c test_array_2_c
-	@for prog in $^ ; do \
-	    echo $$prog; \
-	    ./$$prog ; \
-	done
-
-test_pointer_c: test_pointer_1_c test_pointer_2_c
-	@for prog in $^ ; do \
+test: $(EXES)
+	@for prog in $(EXES); do \
 	    echo $$prog; \
 	    ./$$prog; \
 	done
 
-test_lapack_c: test_lapack_1_c
-	./$<
-
-time_array_c: test_array_1_c test_array_2_c
-	@for prog in $^ ; do \
+time: $(EXES)
+	@for prog in $(EXES); do \
 	    echo $$prog; \
-	    time ./$$prog > /dev/null; \
-	    time ./$$prog > /dev/null; \
+	    time ./$$prog; \
+	    time ./$$prog; \
 	done
-
-time_pointer_c: test_pointer_1_c test_pointer_2_c
-	@for prog in $^ ; do \
-	    echo $$prog; \
-	    time ./$$prog > /dev/null ; \
-	    time ./$$prog > /dev/null ; \
-	done
-
-time_lapack_c: test_lapack_1_c
-	time ./$< > /dev/null
-	time ./$< > /dev/null
-
-test:
-	make test_array_c
-	make test_pointer_c
-	make test_lapack_c
-
-time:
-	make time_array_c
-	make time_pointer_c
-	make time_lapack_c
 
 clean:
 	rm -f $(EXES) *.o

@@ -1,38 +1,38 @@
 EXES=test_1_f test_lapack_1_f
-SOL=../solution_f90.txt
-all: $(EXES)
+FC=gfortran
+FFLAGS=-O3 -Wall
+LAPACKLIB=-lsatlas
+
+.SUFFIXES: .f90
 .PHONY: test clean
 
-lin.o: lin.f90
-	gfortran -O3 -Wall -c $<
+all: $(EXES)
 
-test_1_f: test_1.f90 lin.o
-	gfortran -O3 -Wall -o $@ $^
+.f90.o:
+	$(FC) $(FFLAGS) -c $<
 
-test_lapack_1_f: test_lapack_1.f90
-	gfortran -O3 -Wall -o $@ $^ -lsatlas
+lin.o lin.mod: lin.f90
+test_1.o: test_1.f90 lin.f90
+test_lapack_1.o: test_lapack_1.f90
 
-test_f: test_1_f
-	./$<
+test_1_f: test_1.o lin.o
+	$(FC) $(FFLAGS) -o $@ $^
 
-test_lapack_f: test_lapack_1_f
-	./$<
+test_lapack_1_f: test_lapack_1.o
+	$(FC) $(FFLAGS) -o $@ $^ $(LAPACKLIB)
 
-time_f: test_1_f
-	time ./$< > /dev/null
-	time ./$< > /dev/null
+test: $(EXES)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    ./$$prog; \
+	done
 
-time_lapack_f: test_lapack_1_f
-	time ./$< > /dev/null
-	time ./$< > /dev/null
-
-test:
-	make test_f
-	make test_lapack_f
-
-time:
-	make time_f
-	make time_lapack_f
+time: $(EXRS)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    time ./$$prog; \
+	    time ./$$prog; \
+	done
 
 clean:
 	rm -f $(EXES) *.o *.mod

@@ -1,5 +1,9 @@
 .PHONY: time
 
+all:
+
+test:
+
 time:
 	make time_r
 	make time_octave
