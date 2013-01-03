@@ -29,7 +29,7 @@ int main()
 	exit(1);
     }
     for(i=0; i<N; i++){
-	for(j=0; j<N+1; j++){
+	for(j=0; j<N; j++){
 	    a[i*N+j]=1.0;
 	}
 	a[i*N+i]=1001.0;
