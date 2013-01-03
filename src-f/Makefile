@@ -1,4 +1,4 @@
-EXES=test_1_f test_lapack_1_f
+EXES=test_1_f test_lapack_1_f test_2_f
 FC=gfortran
 FFLAGS=-O3 -Wall
 LAPACKLIB=-lsatlas
@@ -12,7 +12,9 @@ all: $(EXES)
 	$(FC) $(FFLAGS) -c $<
 
 lin.o lin.mod: lin.f90
+lin_complete.o lin_complete.mod: lin_complete.f90
 test_1.o: test_1.f90 lin.f90
+test_2.o: test_2.f90 lin_complete.f90
 test_lapack_1.o: test_lapack_1.f90
 
 test_1_f: test_1.o lin.o
@@ -20,6 +22,9 @@ test_1_f: test_1.o lin.o
 
 test_lapack_1_f: test_lapack_1.o
 	$(FC) $(FFLAGS) -o $@ $^ $(LAPACKLIB)
+
+test_2_f: test_2.o lin_complete.o
+	$(FC) $(FFLAGS) -o $@ $^
 
 test: $(EXES)
 	@for prog in $(EXES); do \
