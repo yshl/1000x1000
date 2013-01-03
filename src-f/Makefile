@@ -10,9 +10,11 @@ all: $(EXES)
 
 .f90.o:
 	$(FC) $(FFLAGS) -c $<
+.f90.mod:
+	$(FC) $(FFLAGS) -c $<
 
 lin.o lin.mod: lin.f90
-test_1.o: test_1.f90 lin.f90
+test_1.o: test_1.f90 lin.mod
 test_lapack_1.o: test_lapack_1.f90
 
 test_1_f: test_1.o lin.o
