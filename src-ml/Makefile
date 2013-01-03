@@ -1,4 +1,4 @@
-EXES=test_1_ml
+EXES=test_1_ml test_list_1_ml
 OCAMLC=ocamlopt
 OCAMLFLAGS=
 
@@ -7,6 +7,9 @@ OCAMLFLAGS=
 all: $(EXES)
 
 test_1_ml: lin.ml test_1.ml
+	$(OCAMLC) $(OCAMLFLAGS) -o $@ $^
+
+test_list_1_ml: lin_list.ml test_list_1.ml
 	$(OCAMLC) $(OCAMLFLAGS) -o $@ $^
 
 test: $(EXES)

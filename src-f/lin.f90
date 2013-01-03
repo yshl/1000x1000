@@ -66,7 +66,7 @@ subroutine solve(a, b)
         enddo
         b(i+1:N)=b(i+1:N)-a(i+1:N,i)*b(i)
     enddo
-    ! backard
+    ! backward
     do i=N, 1, -1
         b(1:i-1)=b(1:i-1)-a(1:i-1,i)*b(i)
     enddo
