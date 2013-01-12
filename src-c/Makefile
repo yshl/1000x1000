@@ -16,7 +16,7 @@ lin_pointer.o: lin_pointer.c lin_pointer.h
 test_array_1.o: test_array_1.c lin_array.h
 test_pointer_1.o: test_pointer_1.c lin_pointer.h
 test_lapack_1.o: test_lapack_1.c
-	$(CC) $(CFLAGS) -o $@ $< $(LAPACKINC)
+	$(CC) $(CFLAGS) -c $< $(LAPACKINC)
 
 test_array_1_c: test_array_1.o lin_array.o
 	$(CC) $(CFLAGS) -o $@ $^
@@ -24,7 +24,7 @@ test_array_1_c: test_array_1.o lin_array.o
 test_pointer_1_c: test_pointer_1.o lin_pointer.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-test_lapack_1_c: test_lapack_1.c
+test_lapack_1_c: test_lapack_1.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LAPACKLIB)
 
 test: $(EXES)
