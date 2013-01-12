@@ -35,21 +35,28 @@ static void scale(int N, double **a, double *b, double *scale_b)
     }
 }
 
-static int pivot(int N, double **a, double *b, int i)
+static void pivot(int N, double **a, int i, int *maxj, int *maxk)
 {
     double ajimax=fabs(a[i][i]);
-    int maxj=i, maxk=i, j, k;
+    int j, k;
 
+    *maxj=i;
+    *maxk=i;
     for(j=i; j<N; j++){
 	for(k=i; k<N; k++){
 	    double aji=fabs(a[j][k]);
 	    if(aji>ajimax){
 		ajimax=aji;
-		maxj=j;
-		maxk=k;
+		*maxj=j;
+		*maxk=k;
 	    }
 	}
     }
+}
+
+static void swap_pivot(int N, double **a, double *b, int i, int maxj, int maxk)
+{
+    int j;
     if(i!=maxj){
 	swap(double*, a[i], a[maxj]);
 	swap(double, b[i], b[maxj]);
@@ -59,12 +66,11 @@ static int pivot(int N, double **a, double *b, int i)
 	    swap(double, a[j][i], a[j][maxk]);
 	}
     }
-    return maxk;
 }
 
 void solve(double **a, double *b, int N)
 {
-    int i,j,k;
+    int i,j,k,maxj,maxk;
     double *scale_b;
     int *swap_col;
 
@@ -82,20 +88,33 @@ void solve(double **a, double *b, int N)
 
     /* scale */
     scale(N, a, b, scale_b);
+    pivot(N, a, 0, &maxj, &maxk);
     for(i=0; i<N; i++){
-	double factor;
+	double factor, ajkmax;
 	/* pivot */
-	swap_col[i]=pivot(N,a,b,i);
+	swap_col[i]=maxk;
+	swap_pivot(N, a, b, i, maxj, maxk);
 	/* forward */
 	factor=1.0/a[i][i];
 	for(j=i+1; j<N; j++){
 	    a[i][j]*=factor;
 	}
 	b[i]*=factor;
+
+	ajkmax=0.0;
+	maxj=i+1;
+	maxk=i+1;
 	for(j=i+1; j<N; j++){
 	    factor=a[j][i];
 	    for(k=i+1; k<N; k++){
+		double ajk;
 		a[j][k]-=factor*a[i][k];
+		ajk=fabs(a[j][k]);
+		if(ajk>ajkmax){
+		    ajkmax=ajk;
+		    maxj=j;
+		    maxk=k;
+		}
 	    }
 	    b[j]-=factor*b[i];
 	}

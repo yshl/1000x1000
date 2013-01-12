@@ -36,12 +36,13 @@ subroutine scalearray(a, b, scaleb)
         scaleb(i)=factor
     enddo
 end subroutine
-integer function pivot(a, b, i)
+subroutine pivot(a, i, maxj, maxk)
     implicit none
-    double precision, intent(inout):: a(:,:), b(:)
+    double precision, intent(inout):: a(:,:)
     integer, intent(in) :: i
+    integer, intent(out) :: maxj, maxk
     double precision :: ajk, ajkmax
-    integer :: j, k, maxj, maxk
+    integer :: j, k
     ajkmax=abs(a(i,i))
     maxj=i
     maxk=i
@@ -55,6 +56,11 @@ integer function pivot(a, b, i)
             endif
         enddo
     enddo
+end subroutine
+subroutine swappivot(a, b, i, maxj, maxk)
+    double precision, intent(inout) :: a(:,:), b(:)
+    integer, intent(in) :: i,maxj,maxk
+    integer :: j
     ! swap
     if(i/=maxj)then
         do j=i, ubound(a,2)
@@ -67,30 +73,42 @@ integer function pivot(a, b, i)
             call swap(a(j,i), a(j,maxk))
         enddo
     endif
-    pivot=maxk
-end function
+end subroutine
 subroutine solve(a, b)
     implicit none
     double precision, intent(inout):: a(:,:), b(:)
-    double precision :: factor
+    double precision :: factor, ajkmax, ajk
     double precision, allocatable:: scaleb(:)
     integer, allocatable:: swapcol(:)
-    integer :: i,j,N
+    integer :: i,j,k,N,maxj,maxk
     N=ubound(a,1)
     allocate(scaleb(1:N))
     allocate(swapcol(1:N))
     ! scale
     call scalearray(a,b,scaleb)
+    call pivot(a,1,maxj,maxk)
     do i=1, N
         ! pivot
-        swapcol(i)=pivot(a,b,i)
+        swapcol(i)=maxk
+        call swappivot(a,b,i,maxj,maxk)
         ! forward
         factor=1.0/a(i,i)
         a(i,i+1:N)=factor*a(i,i+1:N)
         b(i)=factor*b(i)
     
+        ajkmax=0.0
+        maxj=i+1
+        maxk=i+1
         do j=i+1, N
             a(i+1:N,j)=a(i+1:N,j)-a(i+1:N,i)*a(i,j)
+            do k=i+1, N
+                ajk=abs(a(k,j))
+                if(ajk>ajkmax)then
+                    ajkmax=ajk
+                    maxj=k
+                    maxk=j
+                endif
+            enddo
         enddo
         b(i+1:N)=b(i+1:N)-a(i+1:N,i)*b(i)
     enddo
