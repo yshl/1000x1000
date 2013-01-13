@@ -1,4 +1,4 @@
-EXES=test_1_cc
+EXES=test_1_cc test_ublas_1_cc
 CXX=g++
 CXXFLAGS=-O3 -Wall
 
@@ -11,7 +11,10 @@ all: $(EXES)
 
 lin.o: lin.cc lin.h
 test_1.o: test_1.cc lin.h
+test_ublas_1.o: test_ublas_1.cc
 test_1_cc: test_1.o lin.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
+test_ublas_1_cc: test_ublas_1.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 test: $(EXES)
