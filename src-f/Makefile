@@ -38,7 +38,7 @@ test: $(EXES)
 	    ./$$prog; \
 	done
 
-time: $(EXRS)
+time: $(EXES)
 	@for prog in $(EXES); do \
 	    echo $$prog; \
 	    time ./$$prog; \
