@@ -109,7 +109,7 @@
 *>     Umea University, S-901 87 Umea, Sweden.
 *
 *  =====================================================================
-      SUBROUTINE DGETC2( N, A, LDA, IPIV, JPIV, INFO )
+      SUBROUTINE MYDGETC2( N, A, LDA, IPIV, JPIV, INFO )
 *
 *  -- LAPACK auxiliary routine (version 3.4.2) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -140,6 +140,8 @@
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH
       EXTERNAL           DLAMCH
+      INTEGER            IDAMAX
+      EXTERNAL           IDAMAX
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX
@@ -162,15 +164,15 @@
 *        Find max element in matrix A
 *
          XMAX = ZERO
-         DO 20 IP = I, N
-            DO 10 JP = I, N
-               IF( ABS( A( IP, JP ) ).GE.XMAX ) THEN
-                  XMAX = ABS( A( IP, JP ) )
-                  IPV = IP
-                  JPV = JP
-               END IF
-   10       CONTINUE
-   20    CONTINUE
+         DO 10 JP = I, N
+            IP = IDAMAX( N-I+1, A( I:N, JP ), 1 )
+            IP = IP+I-1
+            IF( ABS( A( IP, JP ) ).GE.XMAX ) THEN
+               XMAX = ABS( A( IP, JP ) )
+               IPV = IP
+               JPV = JP
+            END IF
+   10    CONTINUE
          IF( I.EQ.1 )
      $      SMIN = MAX( EPS*XMAX, SMLNUM )
 *
