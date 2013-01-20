@@ -6,9 +6,10 @@
 *.cmx
 *.cmo
 *.class
+*.db
 test_*_f
 test_*_c
 test_*_cc
 test_*_d
 test_*_ml
-lin_cl
+test_*_scm
