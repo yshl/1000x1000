@@ -21,7 +21,7 @@ program test_2
     do i=1, N
         b(i)=sum(a(i,1:N))
     enddo
-    call dgetc2(N,a,N,ipiv,jpiv,info)
+    call mydgetc2(N,a,N,ipiv,jpiv,info)
     if(info>0)then
         write(*,'(a,i4,a,i4,a,e13.6)') "A(",info,",",info,")=",a(info,info)
         stop 1
