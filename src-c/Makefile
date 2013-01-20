@@ -23,6 +23,8 @@ test_lapack_1.o: test_lapack_1.c
 	$(CC) $(CFLAGS) -c $< $(LAPACKINC)
 test_lapack_2.o: test_lapack_2.c
 	$(CC) $(CFLAGS) -c $< $(LAPACKINC)
+../src-f/dgetc2.o:
+	$(MAKE) -C ../src-f $@
 
 test_array_1_c: test_array_1.o lin_array.o
 	$(CC) $(CFLAGS) -o $@ $^
@@ -39,7 +41,7 @@ test_array_2_c: test_array_2.o lin_array_complete.o
 test_pointer_2_c: test_pointer_2.o lin_pointer_complete.o
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 
-test_lapack_2_c: test_lapack_2.o
+test_lapack_2_c: test_lapack_2.o ../src-f/dgetc2.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LAPACKLIB)
 
 test: $(EXES)

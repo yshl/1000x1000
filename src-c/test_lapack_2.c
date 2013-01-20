@@ -6,6 +6,7 @@
 
 extern void dgetc2_(const int *, double *, const int *, int *, int *, int *);
 extern void dgesc2_(const int *, double *, const int *, double *, int *, int *, double *);
+extern void mydgetc2_(const int *, double *, const int *, int *, int *, int *);
 
 int main()
 {
@@ -55,7 +56,7 @@ int main()
 	jpiv[i]=0;
     }
     /* solve */
-    dgetc2_(&N, a, &N, ipiv, jpiv, &info);
+    mydgetc2_(&N, a, &N, ipiv, jpiv, &info);
     dgesc2_(&N, a, &N, b, ipiv, jpiv, &scale);
     if(scale!=1.0){
 	for(i=0; i<N; i++){
