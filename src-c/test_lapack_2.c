@@ -77,5 +77,6 @@ int main()
     free(a);
     free(b);
     free(ipiv);
+    free(jpiv);
     return 0;
 }

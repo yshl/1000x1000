@@ -58,6 +58,9 @@ int main()
 	fprintf(stderr, "Large error\n");
 	exit(1);
     }
+    for(i=0; i<N; i++){
+	free(a[i]);
+    }
     free(a);
     free(b);
     return 0;
