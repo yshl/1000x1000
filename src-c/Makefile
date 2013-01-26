@@ -1,4 +1,6 @@
-EXES=test_array_1_c test_pointer_1_c test_lapack_1_c test_array_2_c test_pointer_2_c test_lapack_2_c
+EXES=test_array_1_c test_pointer_1_c test_lapack_1_c \
+     test_array_2_c test_pointer_2_c test_lapack_2_c \
+     test_array_rand_c test_pointer_rand_c
 CC=gcc
 CFLAGS=-O3 -Wall
 LAPACKLIB=-lsatlas
@@ -19,6 +21,8 @@ test_array_1.o: test_array_1.c lin_array.h
 test_pointer_1.o: test_pointer_1.c lin_pointer.h
 test_array_2.o: test_array_2.c lin_array.h
 test_pointer_2.o: test_pointer_2.c lin_pointer.h
+test_array_rand.o: test_array_rand.c lin_array.h
+test_pointer_rand.o: test_pointer_rand.c lin_pointer.h
 test_lapack_1.o: test_lapack_1.c
 	$(CC) $(CFLAGS) -c $< $(LAPACKINC)
 test_lapack_2.o: test_lapack_2.c
@@ -41,6 +45,12 @@ test_pointer_2_c: test_pointer_2.o lin_pointer_complete.o
 
 test_lapack_2_c: test_lapack_2.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LAPACKLIB)
+
+test_array_rand_c: test_array_rand.o lin_array_complete.o
+	$(CC) $(CFLAGS) -o $@ $^ -lm
+
+test_pointer_rand_c: test_pointer_rand.o lin_pointer_complete.o
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 test: $(EXES)
 	@for prog in $(EXES); do \
