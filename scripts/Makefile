@@ -3,6 +3,16 @@
 all:
 
 test:
+	make test_r
+	make test_octave
+	make test_scilab
+
+test_r: lin.r
+	Rscript $<
+test_octave: lin.m
+	octave -q $<
+test_scilab: lin.sce
+	scilab -nwni -nb -f $<
 
 time:
 	make time_r
@@ -20,3 +30,5 @@ time_octave: lin.m
 time_scilab: lin.sce
 	time scilab -nwni -nb -f $< > /dev/null
 	time scilab -nwni -nb -f $< > /dev/null
+
+clean:
