@@ -29,4 +29,5 @@ program test_1
     endif
     deallocate(a)
     deallocate(b)
+    deallocate(ipiv)
 end
