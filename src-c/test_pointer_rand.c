@@ -52,12 +52,12 @@ int main()
     /* output */
     maxerr=0.0;
     for(i=0; i<N; i++){
-	if(fabs(b[i]-x[i])>fabs(maxerr)){
+	if(!(fabs(b[i]-x[i])<=fabs(maxerr))){
 	    maxerr=b[i]-x[i];
 	}
     }
     printf("%g\n",maxerr);
-    if(fabs(maxerr)>1.0e-8){
+    if(!(fabs(maxerr)<=1.0e-8)){
 	fprintf(stderr,"Large error\n");
 	exit(1);
     }

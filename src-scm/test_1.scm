@@ -12,5 +12,5 @@
   (foreach-fold 0 n 0.0
 		(lambda (i errmax)
 		  (let ((bi-error (- (vector-ref b i) 0.5)))
-		    (if (> (abs bi-error) (abs errmax)) bi-error errmax)))))
+		    (if (not (<= (abs bi-error) (abs errmax))) bi-error errmax)))))
 (newline)

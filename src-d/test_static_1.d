@@ -18,12 +18,12 @@ void main()
     /* output */
     auto maxerr=0.0;
     foreach(bi; b){
-	if(fabs(bi-0.5)>fabs(maxerr)){
+	if(!(fabs(bi-0.5)<=fabs(maxerr))){
 	    maxerr=bi-0.5;
 	}
     }
     writef("%g\n", maxerr);
-    if(fabs(maxerr)>1.0e-8){
+    if(!(fabs(maxerr)<=1.0e-8)){
 	throw new Exception("Large error");
     }
 }

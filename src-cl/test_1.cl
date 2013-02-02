@@ -10,10 +10,10 @@
       (setf (aref a i i) 1001.0d0))
     (solve a b)
     (dotimes (i N)
-      (if (> (abs (- (aref b i) 0.5d0)) (abs errmax))
+      (if (not (<= (abs (- (aref b i) 0.5d0)) (abs errmax)))
 	(setq errmax (- (aref b i) 0.5d0))))
     (format t "~,6g~%" errmax)
-    (if (> (abs errmax) 1.0d-8)
+    (if (not (<= (abs errmax) 1.0d-8))
       (princ "Large error"))))
 
 (main)

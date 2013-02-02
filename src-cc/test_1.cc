@@ -22,12 +22,12 @@ int main()
     /* output */
     maxerr=0.0;
     for(size_t i=0; i<N; i++){
-	if(fabs(b[i]-0.5)>maxerr){
+	if(!(fabs(b[i]-0.5)<=maxerr)){
 	    maxerr=b[i]-0.5;
 	}
     }
     cout << maxerr << endl;
-    if(fabs(maxerr)>1.0e-8){
+    if(!(fabs(maxerr)<=1.0e-8)){
 	cerr<<"Large error"<<endl;
 	exit(1);
     }

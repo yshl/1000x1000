@@ -20,7 +20,7 @@ class Test_1{
 
 	double maxerr=0.0;
 	for(int i=0; i<n; i++){
-	    if(Math.abs(b[i]-0.5)>Math.abs(maxerr)){
+	    if(!(Math.abs(b[i]-0.5)<=Math.abs(maxerr))){
 		maxerr=b[i]-0.5;
 	    }
 	}

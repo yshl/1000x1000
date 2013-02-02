@@ -49,12 +49,12 @@ int main()
     /* output */
     maxerr=0.0;
     for(i=0; i<N; i++){
-	if(fabs(b[i]-1.0)>fabs(maxerr)){
+	if(!(fabs(b[i]-1.0)<=fabs(maxerr))){
 	    maxerr=b[i]-1.0;
 	}
     }
     printf("%g\n",maxerr);
-    if(fabs(maxerr)>1.0e-8){
+    if(!(fabs(maxerr)<=1.0e-8)){
 	fprintf(stderr, "Large error\n");
 	exit(1);
     }

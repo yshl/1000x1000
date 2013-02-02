@@ -17,12 +17,12 @@ program test_1
     call solve(a,b)
     maxerr=0.0
     do i=1, N
-        if(abs(b(i)-0.5)>abs(maxerr))then
+        if(.not.(abs(b(i)-0.5)<=abs(maxerr)))then
             maxerr=b(i)-0.5
         endif
     enddo
     write(*,'(e13.6)') maxerr
-    if(abs(maxerr)>1.0e-8)then
+    if(.not.(abs(maxerr)<=1.0e-8))then
         write(0,'(A)') "Large error"
         stop 1
     endif
