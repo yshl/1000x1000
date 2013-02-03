@@ -12,7 +12,7 @@ int main()
     double maxerr;
     int i,j;
 
-    srand(clock());
+    srand((unsigned int)time(NULL));
     a=malloc(sizeof(double*)*N);
     if(a==NULL){
 	perror("");
