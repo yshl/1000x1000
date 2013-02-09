@@ -1,5 +1,7 @@
-EXES=test_array_1_c test_pointer_1_c test_lapack_1_c test_ahouse_1_c test_qr_1_c \
-     test_array_2_c test_pointer_2_c test_lapack_2_c test_ahouse_2_c test_qr_2_c \
+EXES=test_array_1_c test_pointer_1_c test_lapack_1_c test_ahouse_1_c \
+     test_qr_1_c test_lq_1_c \
+     test_array_2_c test_pointer_2_c test_lapack_2_c test_ahouse_2_c \
+     test_qr_2_c test_lq_2_c \
      test_array_rand_c test_pointer_rand_c
 CC=gcc
 CFLAGS=-O3 -Wall
@@ -19,6 +21,7 @@ lin_array_complete.o: lin_array_complete.c lin_array.h
 lin_pointer_complete.o: lin_pointer_complete.c lin_pointer.h
 lin_array_householder.o: lin_array_householder.c lin_array.h
 lin_array_qr.o: lin_array_qr.c lin_array.h
+lin_array_lq.o: lin_array_lq.c lin_array.h
 test_array_1.o: test_array_1.c lin_array.h
 test_pointer_1.o: test_pointer_1.c lin_pointer.h
 test_array_2.o: test_array_2.c lin_array.h
@@ -47,6 +50,9 @@ test_ahouse_1_c: test_array_1.o lin_array_householder.o
 test_qr_1_c: test_array_1.o lin_array_qr.o
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 
+test_lq_1_c: test_array_1.o lin_array_lq.o
+	$(CC) $(CFLAGS) -o $@ $^ -lm
+
 test_array_2_c: test_array_2.o lin_array_complete.o
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 
@@ -60,6 +66,9 @@ test_ahouse_2_c: test_array_2.o lin_array_householder.o
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 test_qr_2_c: test_array_2.o lin_array_qr.o
+	$(CC) $(CFLAGS) -o $@ $^ -lm
+
+test_lq_2_c: test_array_2.o lin_array_lq.o
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 test_array_rand_c: test_array_rand.o lin_array_complete.o
