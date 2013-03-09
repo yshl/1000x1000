@@ -1,4 +1,4 @@
-SUBDIRS=src-f src-c src-cc src-d src-ml src-cl src-java src-scm scripts
+SUBDIRS=src-f src-c src-cc src-d src-ml src-cl src-java src-scm src-fth scripts
 .PHONY: all test time clean
 
 all:
