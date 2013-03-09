@@ -48,13 +48,14 @@
   `(setf ,a (- ,a ,b)))
 
 (defun elim-col (a b i)
-  (declare (type (array double-float (* *)) a)
-	   (type (array double-float (*)) b)
-	   (type (integer) i))
+  (declare (optimize (speed 3)))
+  (declare (type (simple-array double-float (* *)) a)
+	   (type (simple-array double-float (*)) b)
+	   (type fixnum i))
   (let ((n (array-dimension a 0)))
-    (loop for j from (1+ i) to (1- n) do
+    (loop for j fixnum from (1+ i) to (1- n) do
 	  (let ((aji (aref a j i)))
-	    (loop for k from (1+ i) to (1- n) do
+	    (loop for k fixnum from (1+ i) to (1- n) do
 		  (sub-setf (aref a j k) (* aji (aref a i k))))
 	    (sub-setf (aref b j) (* aji (aref b i)))))))
 
