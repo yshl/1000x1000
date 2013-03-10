@@ -8,10 +8,10 @@ private void swap(T1)(ref T1 a, ref T1 b)
     b=tmp;
 }
 
-private void pivot(int N)(double[N][] a, double[] b, int i)
+private void pivot(int N)(double[N][] a, double[] b, size_t i)
 {
     double ajimax=abs(a[i][i]);
-    int maxj=i;
+    size_t maxj=i;
     foreach(j; i+1..a.length){
 	double aji=abs(a[j][i]);
 	if(aji>ajimax){
