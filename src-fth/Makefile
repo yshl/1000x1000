@@ -1,4 +1,4 @@
-EXES=test_1.fs
+EXES=test_1.fth
 FORTH=gforth
 
 .PHONY: test clean

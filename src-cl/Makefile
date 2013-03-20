@@ -1,31 +1,31 @@
 SBCLFASL=lin.fasl
 ECLFAS=lin.fas
 
-.SUFFIXES: .cl .fasl .fas
+.SUFFIXES: .lisp .fasl .fas
 .PHONY: test clean
 
 all: $(SBCLFASL) $(ECLFAS)
 
-.cl.fasl:
+.lisp.fasl:
 	sbcl --noinform --eval "(compile-file \"$<\")" --eval "(quit)"
 
-.cl.fas:
+.lisp.fas:
 	ecl -eval "(compile-file \"$<\")" -eval "(quit)"
 
-lin.fasl: lin.cl
-lin.fas: lin.cl
+lin.fasl: lin.lisp
+lin.fas: lin.lisp
 
-test_sbcl: test_1.cl lin.fasl
+test_sbcl: test_1.lisp lin.fasl
 	sbcl --noinform --load $<
 
-test_ecl: test_ecl_1.cl lin.fas
+test_ecl: test_ecl_1.lisp lin.fas
 	ecl -load $<
 
-time_sbcl: test_1.cl lin.fasl
+time_sbcl: test_1.lisp lin.fasl
 	time sbcl --noinform --load $<
 	time sbcl --noinform --load $<
 
-time_ecl: test_ecl_1.cl lin.fas
+time_ecl: test_ecl_1.lisp lin.fas
 	time ecl -load $<
 	time ecl -load $<
 

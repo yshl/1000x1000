@@ -1,4 +1,4 @@
-s" lin.fs" included
+s" lin.fth" included
 1000 value n
 n dup * floats allocate throw value a
 n floats allocate throw value b
