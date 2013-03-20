@@ -32,23 +32,60 @@ static void pivot(double** a, double* b, int N, int i)
     }
 }
 
-static void update_upper_row(double** a, double* b, int N, int i)
+static void update_lower_col(double** a, double* b, int N, int i,
+	int blockend)
 {
-    double factor;
-    factor=1.0/a[i][i];
-    scale_array(a[i],i+1,N,factor);
-    b[i]*=factor;
+    int i1,j,k;
+    for(i1=i; i1<blockend; i1++){
+	double factor;
+	/* pivot */
+	pivot(a,b,N,i1);
+
+	factor=1.0/a[i1][i1];
+	scale_array(a[i1],i1+1,blockend,factor);
+	b[i1]*=factor;
+
+	for(j=i1+1; j<N; j++){
+	    factor=a[j][i1];
+	    for(k=i1+1; k<blockend; k++){
+		a[j][k]-=factor*a[i1][k];
+	    }
+	    b[j]-=factor*b[i1];
+	}
+    }
 }
 
-static void forward_elimination(double** a, double* b, int N, int i)
+static void update_upper_row(double** a, int N, int i, int blockend)
 {
-    int j,k;
-    for(j=i+1; j<N; j++){
-	double factor=a[j][i];
-	for(k=i+1; k<N; k++){
-	    a[j][k]-=factor*a[i][k];
+    int j,k,i1;
+    for(i1=i; i1<blockend; i1++){
+	double factor=1.0/a[i1][i1];
+	scale_array(a[i1],blockend,N,factor);
+	for(j=i1+1; j<blockend; j++){
+	    for(k=blockend; k<N; k++){
+		a[j][k]-=a[j][i1]*a[i1][k];
+	    }
 	}
-	b[j]-=factor*b[i];
+    }
+}
+
+static void forward_elimination(double** a, int N, int i, int blockend)
+{
+    int blocksize=48;
+    int j,k;
+    for(j=blockend; j<N; j+=blocksize){
+	int jend=(j+blocksize<N)? j+blocksize: N;
+	for(k=blockend; k<N; k+=blocksize){
+	    int kend=(k+blocksize<N)? k+blocksize: N;
+	    int j1,k1,l;
+	    for(j1=j; j1<jend; j1++){
+		for(l=i; l<blockend; l++){
+		    for(k1=k; k1<kend; k1++){
+			a[j1][k1]-=a[j1][l]*a[l][k1];
+		    }
+		}
+	    }
+	}
     }
 }
 
@@ -65,14 +102,15 @@ static void back_substitution(double** a, double* b, int N)
 void solve(double **a, double *b, int N)
 {
     int i;
+    int blocksize=48;
     /* scale */
     scale_matrix_row(a,b,N);
-    for(i=0; i<N; i++){
-	/* pivot */
-	pivot(a,b,N,i);
+    for(i=0; i<N; i+=blocksize){
+	int blockend=(i+blocksize<N)? i+blocksize: N;
 	/* forward */
-	update_upper_row(a,b,N,i);
-	forward_elimination(a,b,N,i);
+	update_lower_col(a,b,N,i,blockend);
+	update_upper_row(a,N,i,blockend);
+	forward_elimination(a,N,i,blockend);
     }
     /* back */
     back_substitution(a,b,N);
