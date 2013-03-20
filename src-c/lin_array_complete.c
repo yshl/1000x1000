@@ -1,24 +1,16 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include"common_array.h"
 #include"lin_array.h"
-
-#define swap(type, a, b) do{type tmp=a; a=b; b=tmp;}while(0)
 
 static void scale(int N, double a[N][N], double b[N], double scale_b[N])
 {
     int i,j;
 
     for(i=0; i<N; i++){
-	double aijmax=fabs(a[i][0]);
-	double factor;
-	for(j=1; j<N; j++){
-	    aijmax=fmax(aijmax, fabs(a[i][j]));
-	}
-	factor=1.0/aijmax;
-	for(j=0; j<N; j++){
-	    a[i][j]*=factor;
-	}
+	double factor=1.0/abs_max_array(a[i],0,N);
+	scale_array(a[i],0,N,factor);
 	b[i]*=factor;
     }
     for(j=0; j<N; j++){
@@ -99,9 +91,7 @@ void solve(int N, double a[N][N], double b[N])
 	swap_pivot(N, a, b, i, maxj, maxk);
 	/* forward */
 	factor=1.0/a[i][i];
-	for(j=i+1; j<N; j++){
-	    a[i][j]*=factor;
-	}
+	scale_array(a[i],i+1,N,factor);
 	b[i]*=factor;
 
 	ajkmax=0.0;
