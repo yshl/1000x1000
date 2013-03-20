@@ -13,8 +13,9 @@ all: $(EXES)
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
-lin_array.o: lin_array.c lin_array.h
-lin_pointer.o: lin_pointer.c lin_pointer.h
+common_array.o: common_array.c common_array.h
+lin_array.o: lin_array.c lin_array.h common_array.h
+lin_pointer.o: lin_pointer.c lin_pointer.h common_array.h
 lin_array_complete.o: lin_array_complete.c lin_array.h
 lin_pointer_complete.o: lin_pointer_complete.c lin_pointer.h
 test_array_1.o: test_array_1.c lin_array.h
@@ -30,10 +31,10 @@ test_lapack_2.o: test_lapack_2.c
 ../src-f/dgetc2.o:
 	$(MAKE) -C ../src-f $@
 
-test_array_1_c: test_array_1.o lin_array.o
+test_array_1_c: test_array_1.o lin_array.o common_array.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-test_pointer_1_c: test_pointer_1.o lin_pointer.o
+test_pointer_1_c: test_pointer_1.o lin_pointer.o common_array.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 test_lapack_1_c: test_lapack_1.o

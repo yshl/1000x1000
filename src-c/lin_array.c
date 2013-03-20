@@ -1,26 +1,15 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include"common_array.h"
 #include"lin_array.h"
-
-#define swap(type, a, b) do{type tmp=a; a=b; b=tmp;}while(0)
 
 static void scale_matrix_row(int N, double a[N][N], double b[N])
 {
-    int i,j;
+    int i;
     for(i=0; i<N; i++){
-	double aijmax=fabs(a[i][0]);
-	double factor;
-	for(j=1; j<N; j++){
-	    double aij=fabs(a[i][j]);
-	    if(aij>aijmax){
-		aijmax=aij;
-	    }
-	}
-	factor=1.0/aijmax;
-	for(j=0; j<N; j++){
-	    a[i][j]*=factor;
-	}
+	double factor=1.0/abs_max_array(a[i],0,N);
+	scale_array(a[i],0,N,factor);
 	b[i]*=factor;
     }
 }
@@ -47,12 +36,9 @@ static void pivot(int N, double a[N][N], double b[N], int i)
 
 static void update_upper_row(int N, double a[N][N], double b[N], int i)
 {
-    int j;
     double factor;
     factor=1.0/a[i][i];
-    for(j=i+1; j<N; j++){
-	a[i][j]*=factor;
-    }
+    scale_array(a[i],i+1,N,factor);
     b[i]*=factor;
 }
 
