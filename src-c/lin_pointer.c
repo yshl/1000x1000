@@ -4,6 +4,11 @@
 #include"common_array.h"
 #include"lin_pointer.h"
 
+static int imin(int a, int b)
+{
+    return a<b?a:b;
+}
+
 static void scale_matrix_row(double** a, double* b, int N)
 {
     int i;
@@ -74,9 +79,9 @@ static void forward_elimination(double** a, int N, int i, int blockend)
     int blocksize=48;
     int j,k;
     for(j=blockend; j<N; j+=blocksize){
-	int jend=(j+blocksize<N)? j+blocksize: N;
+	int jend=imin(j+blocksize,N);
 	for(k=blockend; k<N; k+=blocksize){
-	    int kend=(k+blocksize<N)? k+blocksize: N;
+	    int kend=imin(k+blocksize,N);
 	    int j1,k1,l;
 	    for(j1=j; j1<jend; j1++){
 		for(l=i; l<blockend; l++){
@@ -106,7 +111,7 @@ void solve(double **a, double *b, int N)
     /* scale */
     scale_matrix_row(a,b,N);
     for(i=0; i<N; i+=blocksize){
-	int blockend=(i+blocksize<N)? i+blocksize: N;
+	int blockend=imin(i+blocksize,N);
 	/* forward */
 	update_lower_col(a,b,N,i,blockend);
 	update_upper_row(a,N,i,blockend);
