@@ -78,16 +78,13 @@ static void forward_elimination(double** a, int N, int i, int blockend)
 {
     int blocksize=48;
     int j,k;
-    for(j=blockend; j<N; j+=blocksize){
-	int jend=imin(j+blocksize,N);
-	for(k=blockend; k<N; k+=blocksize){
-	    int kend=imin(k+blocksize,N);
-	    int j1,k1,l;
-	    for(j1=j; j1<jend; j1++){
-		for(l=i; l<blockend; l++){
-		    for(k1=k; k1<kend; k1++){
-			a[j1][k1]-=a[j1][l]*a[l][k1];
-		    }
+    for(k=blockend; k<N; k+=blocksize){
+	int kend=imin(k+blocksize,N);
+	for(j=blockend; j<N; j++){
+	    int k1,l;
+	    for(l=i; l<blockend; l++){
+		for(k1=k; k1<kend; k1++){
+		    a[j][k1]-=a[j][l]*a[l][k1];
 		}
 	    }
 	}

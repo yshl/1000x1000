@@ -78,18 +78,15 @@ static void update_upper_row(int N, double a[N][N], int i, int blockend)
 
 static void forward_elimination(int N, double a[N][N], int i, int blockend)
 {
-    int blocksize=8;
+    int blocksize=32;
     int j,k;
     for(j=blockend; j<N; j+=blocksize){
 	int jend=imin(j+blocksize,N);
-	for(k=blockend; k<N; k+=blocksize){
-	    int kend=imin(k+blocksize,N);
-	    int j1,k1,l;
-	    for(j1=j; j1<jend; j1++){
-		for(l=i; l<blockend; l++){
-		    for(k1=k; k1<kend; k1++){
-			a[j1][k1]-=a[j1][l]*a[l][k1];
-		    }
+	for(k=blockend; k<N; k++){
+	    int j1,l;
+	    for(l=i; l<blockend; l++){
+		for(j1=j; j1<jend; j1++){
+		    a[j1][k]-=a[j1][l]*a[l][k];
 		}
 	    }
 	}
@@ -109,7 +106,7 @@ static void backward_substitution(int N, double a[N][N], double b[N])
 void solve(int N, double a[N][N], double b[N])
 {
     int i;
-    int blocksize=40;
+    int blocksize=32;
     /* scale */
     scale_matrix_row(N,a,b);
     for(i=0; i<N; i+=blocksize){
