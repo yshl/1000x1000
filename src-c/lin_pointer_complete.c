@@ -96,18 +96,16 @@ void solve(double **a, double *b, int N)
 	maxj=i+1;
 	maxk=i+1;
 	for(j=i+1; j<N; j++){
-	    factor=a[j][i];
 	    for(k=i+1; k<N; k++){
-		double ajk;
-		a[j][k]-=factor*a[i][k];
-		ajk=fabs(a[j][k]);
+		double ajk=a[j][k]-=a[j][i]*a[i][k];
+		ajk=fabs(ajk);
 		if(ajk>ajkmax){
 		    ajkmax=ajk;
 		    maxj=j;
 		    maxk=k;
 		}
 	    }
-	    b[j]-=factor*b[i];
+	    b[j]-=a[j][i]*b[i];
 	}
     }
     /* back */

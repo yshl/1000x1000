@@ -97,19 +97,23 @@ void solve(int N, double a[N][N], double b[N])
 	ajkmax=0.0;
 	maxj=i+1;
 	maxk=i+1;
-	for(j=i+1; j<N; j++){
-	    factor=a[j][i];
+	for(j=i+1; j<N; j+=4){
+	    int jend=j+4<N?j+4:N;
 	    for(k=i+1; k<N; k++){
-		double ajk;
-		a[j][k]-=factor*a[i][k];
-		ajk=fabs(a[j][k]);
-		if(ajk>ajkmax){
-		    ajkmax=ajk;
-		    maxj=j;
-		    maxk=k;
+		int jj;
+		for(jj=j; jj<jend; jj++){
+		    double ajk=a[jj][k]-=a[jj][i]*a[i][k];
+		    ajk=fabs(ajk);
+		    if(ajk>ajkmax){
+			ajkmax=ajk;
+			maxj=jj;
+			maxk=k;
+		    }
 		}
 	    }
-	    b[j]-=factor*b[i];
+	}
+	for(j=i+1; j<N; j++){
+	    b[j]-=a[j][i]*b[i];
 	}
     }
     /* back */
