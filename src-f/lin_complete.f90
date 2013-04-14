@@ -100,8 +100,8 @@ subroutine solve(a, b)
         maxj=i+1
         maxk=i+1
         do j=i+1, N
-            a(i+1:N,j)=a(i+1:N,j)-a(i+1:N,i)*a(i,j)
             do k=i+1, N
+                a(k,j)=a(k,j)-a(k,i)*a(i,j)
                 ajk=abs(a(k,j))
                 if(ajk>ajkmax)then
                     ajkmax=ajk
