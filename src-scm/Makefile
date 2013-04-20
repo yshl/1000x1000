@@ -1,14 +1,20 @@
 EXES=test_1_scm
-SCHEME=stalin
-SCMFLAGS=-Ob -Om -On -Or -Ot -architecture IA32 -d -copt -O3 -copt -fomit-frame-pointer -copt -freg-struct-return
+SCHEME=bigloo
+SCMFLAGS=-O6 -copt -O3
 
+.SUFFIXES: .scm
 .PHONY: test clean
 
 all: $(EXES)
 
-test_1_scm: test_1.scm lin.scm
-	$(SCHEME) $(SCMFLAGS) $<
-	mv test_1 $@
+.scm.o:
+	$(SCHEME) $(SCMFLAGS) -c $<
+
+lin.o: lin.scm
+test_1.o: test_1.scm
+
+test_1_scm: test_1.o lin.o
+	$(SCHEME) $(SCMFLAGS) -o $@ $^
 
 test: $(EXES)
 	@for prog in $(EXES); do \
@@ -24,4 +30,4 @@ time: $(EXES)
 	done
 
 clean:
-	rm -f $(EXES) *.db
+	rm -f $(EXES) *.o

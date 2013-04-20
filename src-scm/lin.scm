@@ -1,3 +1,5 @@
+(module lin
+	(export foreach foreach-fold solve))
 (define (foreach from to proc)
   (if (< from to)
     (begin (proc from)
@@ -14,19 +16,21 @@
     accum))
 
 (define (mat-ref a i j)
-  (vector-ref (vector-ref a i) j))
+  (f64vector-ref (vector-ref a i) j))
 
 (define (swap vec i j)
-  (let ((tmp (vector-ref vec i)))
-    (vector-set! vec i (vector-ref vec j))
-    (vector-set! vec j tmp)))
+  (let ((vref (if (f64vector? vec) f64vector-ref vector-ref))
+	(vset! (if (f64vector? vec) f64vector-ref vector-ref)))
+    (let ((tmp (vref vec i)))
+      (vset! vec i (vref vec j))
+      (vset! vec j tmp))))
 
 (define (absmax ai j)
-  (let ((n (vector-length ai))
-	(ajimax (abs (vector-ref ai j))))
-    (foreach-fold (+ j 1) n (abs (vector-ref ai j))
+  (let ((n (f64vector-length ai))
+	(ajimax (abs (f64vector-ref ai j))))
+    (foreach-fold (+ j 1) n (abs (f64vector-ref ai j))
 		  (lambda (k ajimax)
-		    (max ajimax (abs (vector-ref ai k)))))))
+		    (max ajimax (abs (f64vector-ref ai k)))))))
 
 (define (search-pivot a i)
   (let ((n (vector-length a)))
@@ -44,7 +48,7 @@
 	     (swap b i maxj)))))
 
 (define (mul-set! vec i factor)
-  (vector-set! vec i (* (vector-ref vec i) factor)))
+  (f64vector-set! vec i (* (f64vector-ref vec i) factor)))
 
 (define (vector-mul-set! vec from to factor)
   (foreach from to
@@ -52,8 +56,8 @@
 	     (mul-set! vec i factor))))
 
 (define (scale-pivot ai b i)
-  (let ((n (vector-length ai))
-	(factor (/ 1.0 (vector-ref ai i))))
+  (let ((n (f64vector-length ai))
+	(factor (/ 1.0 (f64vector-ref ai i))))
     (vector-mul-set! ai (+ i 1) n factor)
     (mul-set! b i factor)))
 
@@ -67,12 +71,12 @@
 		 (mul-set! b i factor))))))
 
 (define (sub-setf! vec i fac)
-  (vector-set! vec i (- (vector-ref vec i) fac)))
+  (f64vector-set! vec i (- (f64vector-ref vec i) fac)))
 
 (define (vector-sub-setf! vec1 vec2 fac from to)
   (foreach from to
 	   (lambda(i)
-	     (sub-setf! vec1 i (* (vector-ref vec2 i) fac)))))
+	     (sub-setf! vec1 i (* (f64vector-ref vec2 i) fac)))))
 
 (define (elim-col a b i)
   (let ((n (vector-length a))
@@ -80,9 +84,9 @@
     (foreach (+ i 1) n
 	     (lambda(j)
 	       (let* ((aj (vector-ref a j))
-		      (aji (vector-ref aj i)))
+		      (aji (f64vector-ref aj i)))
 		 (vector-sub-setf! aj ai aji (+ i 1) n)
-		 (sub-setf! b j (* aji (vector-ref b i))))))))
+		 (sub-setf! b j (* aji (f64vector-ref b i))))))))
 
 (define (forward-elimination a b)
   (let ((n (vector-length a)))
@@ -94,8 +98,8 @@
 (define (dot vec1 vec2 from to)
   (foreach-fold from to 0.0
 		(lambda(i sum)
-		  (+ sum (* (vector-ref vec1 i)
-			    (vector-ref vec2 i))))))
+		  (+ sum (* (f64vector-ref vec1 i)
+			    (f64vector-ref vec2 i))))))
 
 (define (back-substitution a b)
   (let ((n (vector-length a)))
