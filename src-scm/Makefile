@@ -11,7 +11,7 @@ all: $(EXES)
 	$(SCHEME) $(SCMFLAGS) -c $<
 
 lin.o: lin.scm
-test_1.o: test_1.scm
+test_1.o: test_1.scm lin.scm
 
 test_1_scm: test_1.o lin.o
 	$(SCHEME) $(SCMFLAGS) -o $@ $^
