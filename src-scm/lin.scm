@@ -1,8 +1,8 @@
 (module lin
 	(export solve))
 
-(define v@ f64vector-ref)
-(define v! f64vector-set!)
+(define (v@ vec i) (f64vector-ref vec i))
+(define (v! vec i val) (f64vector-set! vec i val))
 (define (v-! vec i factor)
   (f64vector-set! vec i (- (v@ vec i) factor)))
 (define (v*! vec i factor)
@@ -12,8 +12,8 @@
     (v! vec i (v@ vec j))
     (v! vec j tmp)))
 
-(define av@ vector-ref)
-(define av! vector-set!)
+(define (av@ arr i) (vector-ref arr i))
+(define (av! arr i ai) (vector-set! arr i ai))
 (define (a@ a i j)
   (f64vector-ref (av@ a i) j))
 (define (a! a i j value)
