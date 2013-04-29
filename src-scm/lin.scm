@@ -1,5 +1,5 @@
 (cond-expand
-  (chicken #t)
+  (chicken (declare (unit lin)))
   (bigloo (module lin (export solve a!))))
 
 (cond-expand
@@ -102,7 +102,7 @@
     vec))
 
 (define (abs-max ai)
-  (f64vector-fold (lambda(ajmax aij) (max ajmax (abs aij))) 0.0 ai))
+  (f64vector-fold (lambda(aij ajmax) (max ajmax (abs aij))) 0.0 ai))
 
 (define (scale-array a b)
   (vector-map!

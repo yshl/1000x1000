@@ -2,9 +2,8 @@
   (bigloo (module test
 		  (import (lin "./lin.scm"))))
   (chicken (begin
-	     (use srfi-1)
 	     (use srfi-4)
-	     (use vector-lib))))
+	     (declare (uses lin)))))
 
 (define n 1000)
 (define a (make-vector n))
