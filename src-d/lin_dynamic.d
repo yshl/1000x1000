@@ -1,12 +1,6 @@
 import std.stdio;
 import std.math;
-
-private void swap(T1)(ref T1 a, ref T1 b)
-{
-    auto tmp=a;
-    a=b;
-    b=tmp;
-}
+import std.algorithm;
 
 private void pivot(double[][] a, double[] b, size_t i)
 {
@@ -29,11 +23,7 @@ void solve(double[][] a, double[] b)
 {
     /* scale */
     foreach(i, ref ai; a){
-	double aijmax=0.0;
-	foreach(aij; ai){
-	    aijmax=fmax(aijmax,fabs(aij));
-	}
-	double factor=1.0/aijmax;
+        double factor=1.0/reduce!("fmax(a,fabs(b))")(0.0,ai);
 	ai[]*=factor;
 	b[i]*=factor;
     }
