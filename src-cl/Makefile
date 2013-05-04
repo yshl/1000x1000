@@ -16,18 +16,18 @@ lin.fasl: lin.lisp
 lin.fas: lin.lisp
 
 test_sbcl: test_1.lisp lin.fasl
-	sbcl --noinform --load $<
+	sbcl --noinform --load $(SBCLFASL) --script $<
 
-test_ecl: test_ecl_1.lisp lin.fas
-	ecl -load $<
+test_ecl: test_1.lisp lin.fas
+	ecl -load $(ECLFAS) -shell $<
 
 time_sbcl: test_1.lisp lin.fasl
-	time sbcl --noinform --load $<
-	time sbcl --noinform --load $<
+	time sbcl --noinform --load $(SBCLFASL) --script $<
+	time sbcl --noinform --load $(SBCLFASL) --script $<
 
-time_ecl: test_ecl_1.lisp lin.fas
-	time ecl -load $<
-	time ecl -load $<
+time_ecl: test_1.lisp lin.fas
+	time ecl -load $(ECLFAS) -shell $<
+	time ecl -load $(ECLFAS) -shell $<
 
 test:
 	make test_sbcl test_ecl

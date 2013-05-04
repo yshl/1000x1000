@@ -1,4 +1,3 @@
-(load "lin.fasl")
 (defun main ()
   (let* ((N 1000)
 	 (a (make-array `(,N ,N) :initial-element 1.0d0
