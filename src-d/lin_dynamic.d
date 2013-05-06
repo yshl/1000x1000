@@ -23,12 +23,13 @@ private void update_lower_col(double[][] a, double[] b, size_t i, size_t blocken
 {
     foreach(i1; i..blockend){
 	pivot(a,b,i1);
-	double factor=1.0/a[i1][i1];
-	a[i1][i1+1..blockend]*=factor;
+	double[] ai=a[i1];
+	double factor=1.0/ai[i1];
+	ai[i1+1..blockend]*=factor;
 	b[i1]*=factor;
 	foreach(j; i1+1..a.length){
 	    factor=a[j][i1];
-	    a[j][i1+1..blockend]-=factor*a[i1][i1+1..blockend];
+	    a[j][i1+1..blockend]-=factor*ai[i1+1..blockend];
 	    b[j]-=factor*b[i1];
 	}
     }
@@ -37,10 +38,11 @@ private void update_lower_col(double[][] a, double[] b, size_t i, size_t blocken
 private void update_upper_row(double[][] a, size_t i, size_t blockend)
 {
     foreach(i1; i..blockend){
-	double factor=1.0/a[i1][i1];
-	a[i1][blockend..$]*=factor;
+	double[] ai=a[i1];
+	double factor=1.0/ai[i1];
+	ai[blockend..$]*=factor;
 	foreach(j; i1+1..blockend){
-	    a[j][blockend..$]-=a[j][i1]*a[i1][blockend..$];
+	    a[j][blockend..$]-=a[j][i1]*ai[blockend..$];
 	}
     }
 }
@@ -48,14 +50,15 @@ private void update_upper_row(double[][] a, size_t i, size_t blockend)
 private void forward_elimination(double[][] a, size_t i, size_t blockend)
 {
     size_t n=a.length;
-    size_t blocksize=32;
+    size_t blocksize=64;
     for(size_t j=blockend; j<n; j+=blocksize){
 	size_t jend=min(j+blocksize, n);
 	for(size_t k=blockend; k<n; k+=blocksize){
 	    size_t kend=min(k+blocksize, n);
 	    foreach(j1; j..jend){
+		double[] aj=a[j1];
 		foreach(l; i..blockend){
-		    a[j1][k..kend]-=a[j1][l]*a[l][k..kend];
+		    aj[k..kend]-=aj[l]*a[l][k..kend];
 		}
 	    }
 	}
