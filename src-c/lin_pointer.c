@@ -76,16 +76,27 @@ static void update_upper_row(double** a, int N, int i, int blockend)
 
 static void forward_elimination(double** a, int N, int i, int blockend)
 {
-    int blocksize=48;
-    int j,k;
-    for(k=blockend; k<N; k+=blocksize){
-	int kend=imin(k+blocksize,N);
-	for(j=blockend; j<N; j++){
-	    int k1,l;
-	    for(l=i; l<blockend; l++){
-		for(k1=k; k1<kend; k1++){
-		    a[j][k1]-=a[j][l]*a[l][k1];
+    int j,k,l;
+    const int blocksize=8;
+    for(j=blockend; j<N; j++){
+	for(l=i; l+blocksize<=blockend; l+=blocksize){
+	    int l1;
+	    double ajl[blocksize];
+	    for(l1=0; l1<blocksize; l1++){
+		ajl[l1]=a[j][l+l1];
+	    }
+	    for(k=blockend; k<N; k++){
+		double sum=0.0;
+		for(l1=0; l1<blocksize; l1++){
+		    sum+=ajl[l1]*a[l+l1][k];
 		}
+		a[j][k]-=sum;
+	    }
+	}
+	for(; l<blockend; l++){
+	    double ajl=a[j][l];
+	    for(k=blockend; k<N; k++){
+		a[j][k]-=ajl*a[l][k];
 	    }
 	}
     }

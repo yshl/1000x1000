@@ -99,16 +99,26 @@ subroutine forward_elimination(a, i, blend)
     implicit none
     double precision,intent(inout):: a(:,:)
     integer, intent(in):: i, blend
-    integer N,j,k,l,blsize
-    integer jend
+    integer, parameter:: blsize=8
+    integer N,j,k,l
+    integer l1
+    double precision s,alk(blsize)
 
-    blsize=48
     N=ubound(a,1)
-    do j=blend+1, N, blsize
-        jend=min(j+blsize-1,N)
-        do k=blend+1, N
-            do l=i, blend
-                a(j:jend,k)=a(j:jend,k)-a(j:jend,l)*a(l,k)
+    do k=blend+1, N
+        do l=i, i+(blend-i)/blsize*blsize-1, blsize
+            alk(1:blsize)=a(l:l+blsize-1,k)
+            do j=blend+1, N
+                s=0.0
+                do l1=1, blsize
+                    s=s+a(j,l+l1-1)*alk(l1)
+                enddo
+                a(j,k)=a(j,k)-s
+            enddo
+        enddo
+        do l=i+(blend-i)/blsize*blsize, blend
+            do j=blend+1, N
+                a(j,k)=a(j,k)-a(j,l)*a(l,k)
             enddo
         enddo
     enddo
