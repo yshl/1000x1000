@@ -94,16 +94,28 @@ static void update_upper_row(vector<vector<double> > &a, size_t i,
 static void forward_elimination(vector<vector<double> >&a, size_t i,
 	size_t blockend)
 {
-    const size_t blocksize=48;
+    const size_t blocksize=8;
     const size_t N=a.size();
 
-    for(size_t k=blockend; k<N; k+=blocksize){
-	size_t kend=min(k+blocksize,N);
-	for(size_t j=blockend; j<N; j++){
-	    for(size_t l=i; l<blockend; l++){
-		for(size_t k1=k; k1<kend; k1++){
-		    a[j][k1]-=a[j][l]*a[l][k1];
+    for(size_t j=blockend; j<N; j++){
+	size_t l;
+	for(l=i; l+blocksize<=blockend; l+=blocksize){
+	    double ajl[blocksize];
+	    for(size_t l1=0; l1<blocksize; l1++){
+		ajl[l1]=a[j][l+l1];
+	    }
+	    for(size_t k=blockend; k<N; k++){
+		double sum=0.0;
+		for(size_t l1=0; l1<blocksize; l1++){
+		    sum+=ajl[l1]*a[l+l1][k];
 		}
+		a[j][k]-=sum;
+	    }
+	}
+	for(; l<blockend; l++){
+	    double ajl=a[j][l];
+	    for(size_t k=blockend; k<N; k++){
+		a[j][k]-=ajl*a[l][k];
 	    }
 	}
     }

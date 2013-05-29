@@ -47,17 +47,10 @@ private void update_upper_row(int N)(double[N][] a, size_t i, size_t blockend)
 
 private void forward_elimination(int N)(double[N][] a, size_t i, size_t blockend)
 {
-    size_t n=a.length;
-    size_t blocksize=64;
-    for(size_t j=blockend; j<n; j+=blocksize){
-	size_t jend=min(j+blocksize,n);
-	for(size_t k=blockend; k<n; k+=blocksize){
-	    size_t kend=min(k+blocksize,n);
-	    foreach(j1; j..jend){
-		foreach(l; i..blockend){
-		    a[j1][k..kend]-=a[j1][l]*a[l][k..kend];
-		}
-	    }
+    foreach(ref aj; a[blockend..$]){
+	foreach(l; i..blockend){
+	    double ajl=aj[l];
+	    aj[blockend..$]-=ajl*a[l][blockend..$];
 	}
     }
 }

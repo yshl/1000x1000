@@ -50,16 +50,26 @@ private void update_upper_row(double[][] a, size_t i, size_t blockend)
 private void forward_elimination(double[][] a, size_t i, size_t blockend)
 {
     size_t n=a.length;
-    size_t blocksize=64;
-    for(size_t j=blockend; j<n; j+=blocksize){
-	size_t jend=min(j+blocksize, n);
-	for(size_t k=blockend; k<n; k+=blocksize){
-	    size_t kend=min(k+blocksize, n);
-	    foreach(j1; j..jend){
-		double[] aj=a[j1];
-		foreach(l; i..blockend){
-		    aj[k..kend]-=aj[l]*a[l][k..kend];
+    const size_t blocksize=8;
+    foreach(ref aj; a[blockend..n]){
+	size_t l=i;
+	for(; l+blocksize<=blockend; l+=blocksize){
+	    double ajl[blocksize];
+	    foreach(l1; 0..blocksize){
+		ajl[l1]=aj[l+l1];
+	    }
+	    foreach(k; blockend..n){
+		double sum=0.0;
+		foreach(l1; 0..blocksize){
+		    sum+=ajl[l1]*a[l+l1][k];
 		}
+		aj[k]-=sum;
+	    }
+	}
+	for(; l<blockend; l++){
+	    double ajl=aj[l];
+	    foreach(k, alk; a[l][blockend..n]){
+		aj[blockend+k]-=ajl*alk;
 	    }
 	}
     }
