@@ -47,8 +47,16 @@ private void update_upper_row(int N)(double[N][] a, size_t i, size_t blockend)
 
 private void forward_elimination(int N)(double[N][] a, size_t i, size_t blockend)
 {
+    const size_t blocksize=4;
     foreach(ref aj; a[blockend..$]){
-	foreach(l; i..blockend){
+	size_t l;
+	for(l=i; l+blocksize<=blockend; l+=blocksize){
+	    aj[blockend..$]-=aj[l+0]*a[l+0][blockend..$]
+		+aj[l+1]*a[l+1][blockend..$]
+		+aj[l+2]*a[l+2][blockend..$]
+		+aj[l+3]*a[l+3][blockend..$];
+	}
+	for(; l<blockend; l++){
 	    aj[blockend..$]-=aj[l]*a[l][blockend..$];
 	}
     }
@@ -64,7 +72,7 @@ void solve(int N)(double[N][] a, double[] b)
     }
     /* forward */
     size_t n=a.length;
-    size_t blocksize=16;
+    size_t blocksize=32;
     for(size_t i=0; i<n; i+=blocksize){
 	size_t blockend=min(i+blocksize,n);
 	update_lower_col(a,b,i,blockend);
