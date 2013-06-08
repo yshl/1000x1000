@@ -10,7 +10,7 @@ using namespace boost::numeric::ublas;
 int main()
 {
     const size_t N=1000;
-    matrix<double> a(N,N);
+    vector_of_vector<double,column_major> a(N,N);
     boost::numeric::ublas::vector<double> b(N);
     permutation_matrix<> pm(N);
 
