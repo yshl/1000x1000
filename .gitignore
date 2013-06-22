@@ -7,11 +7,3 @@
 *.cmo
 *.class
 *.db
-test_*_f
-test_*_c
-test_*_cc
-test_*_d
-test_*_ml
-test_*_scm
-test_*_ecl
-test_*_sbcl
