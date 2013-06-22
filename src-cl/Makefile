@@ -1,39 +1,27 @@
-SBCLFASL=lin.fasl
-ECLFAS=lin.fas
+EXES=test_1_sbcl test_1_ecl
 
-.SUFFIXES: .lisp .fasl .fas
 .PHONY: test clean
 
-all: $(SBCLFASL) $(ECLFAS)
+all: $(EXES)
 
-.lisp.fasl:
-	sbcl --noinform --eval "(compile-file \"$<\")" --eval "(quit)"
+test_1_sbcl: test_1.lisp lin.lisp
+	sbcl --noinform --script build_sbcl.lisp
 
-.lisp.fas:
-	ecl -eval "(compile-file \"$<\")" -eval "(quit)"
+test_1_ecl: test_1.lisp lin.lisp
+	ecl -shell build_ecl.lisp
 
-lin.fasl: lin.lisp
-lin.fas: lin.lisp
+test: $(EXES)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    ./$$prog; \
+	done
 
-test_sbcl: test_1.lisp lin.fasl
-	sbcl --noinform --load $(SBCLFASL) --script $<
-
-test_ecl: test_1.lisp lin.fas
-	ecl -load $(ECLFAS) -shell $<
-
-time_sbcl: test_1.lisp lin.fasl
-	time sbcl --noinform --load $(SBCLFASL) --script $<
-	time sbcl --noinform --load $(SBCLFASL) --script $<
-
-time_ecl: test_1.lisp lin.fas
-	time ecl -load $(ECLFAS) -shell $<
-	time ecl -load $(ECLFAS) -shell $<
-
-test:
-	make test_sbcl test_ecl
-
-time:
-	make time_sbcl time_ecl
+time: $(EXES)
+	@for prog in $(EXES); do \
+	    echo $$prog; \
+	    time ./$$prog; \
+	    time ./$$prog; \
+	done
 
 clean:
-	rm -f $(SBCLFASL) $(ECLFAS)
+	rm -f *.o *.fasl $(EXES)

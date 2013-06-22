@@ -1,0 +1,5 @@
+(compile-file "lin.lisp")
+(compile-file "test_1.lisp")
+(load "lin")
+(load "test_1")
+(sb-ext:save-lisp-and-die "test_1_sbcl" :executable t :toplevel 'main)

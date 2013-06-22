@@ -14,6 +14,3 @@
     (format t "~,6g~%" errmax)
     (if (not (<= (abs errmax) 1.0d-8))
       (princ "Large error"))))
-
-(main)
-(quit)
