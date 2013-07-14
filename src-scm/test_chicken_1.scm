@@ -1,4 +1,5 @@
-(module test (import (lin_bigloo "./lin_bigloo.scm")))
+(use srfi-4)
+(declare (uses lin_chicken))
 
 (define n 1000)
 (define a (make-vector n))
