@@ -1,7 +1,7 @@
 (cond-expand
   (chicken (declare (unit lin)
 		    (export solve)))
-  (bigloo (module lin (export solve))))
+  (bigloo (module lin_bigloo (export solve))))
 
 (cond-expand
   (chicken (begin

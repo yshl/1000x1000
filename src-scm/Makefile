@@ -1,4 +1,4 @@
-EXES=test_1_scm
+EXES=test_bigloo_1_scm
 SCHEME=bigloo
 SCMFLAGS=-O6 -copt -O3
 
@@ -10,10 +10,10 @@ all: $(EXES)
 .scm.o:
 	$(SCHEME) $(SCMFLAGS) -c $<
 
-lin.o: lin.scm
-test_1.o: test_1.scm lin.scm
+lin_bigloo.o: lin_bigloo.scm
+test_bigloo_1.o: test_bigloo_1.scm lin_bigloo.scm
 
-test_1_scm: test_1.o lin.o
+test_bigloo_1_scm: test_bigloo_1.o lin_bigloo.o
 	$(SCHEME) $(SCMFLAGS) -o $@ $^
 
 test: $(EXES)

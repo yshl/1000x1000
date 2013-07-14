@@ -1,6 +1,6 @@
 (cond-expand
   (bigloo (module test
-		  (import (lin "./lin.scm"))))
+		  (import (lin_bigloo "./lin_bigloo.scm"))))
   (chicken (begin
 	     (use srfi-4)
 	     (declare (uses lin)))))
