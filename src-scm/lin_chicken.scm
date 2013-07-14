@@ -1,6 +1,7 @@
 (declare (unit lin_chicken)
 	 (export solve))
 
+(use srfi-1)
 (use srfi-4)
 (use srfi-4-utils)
 (use vector-lib)
@@ -32,12 +33,7 @@
 	((vector? vec) (vector-length vec))))
 
 (define (min-length vec1 . vecs)
-  (define (min-length-1 accum vecs)
-    (if (eq? vecs '())
-      accum
-      (min-length-1 (min accum (vlen (car vecs)))
-		    (cdr vecs))))
-  (min-length-1 (vlen vec1) vecs))
+  (fold vlen (vlen vec1) vecs))
 
 (define (foreach-from f from . vecs)
   (let ((n (apply min-length vecs)))
