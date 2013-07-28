@@ -1,3 +1,4 @@
+(declaim (optimize (speed 3)))
 (compile-file "lin.lisp")
 (compile-file "test_1.lisp")
 (load "lin")
