@@ -1,5 +1,5 @@
-: f*! { f: r addr -- }
-    addr dup f@ r f* f!
+: f*! ( f: r addr -- )
+    dup f@ f* f!
 ;
 
 : rowmax { arow n col -- }
