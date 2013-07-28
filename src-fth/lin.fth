@@ -1,114 +1,113 @@
 : f*! ( f: r addr -- )
     dup f@ f* f!
 ;
+: fa* ( f:r arr n -- )
+    floats over + swap u+do
+        fdup i dup f@ f* f!
+    float +loop
+    fdrop
+;
 
-: rowmax { arow n col -- }
+: rowmax ( arow n -- fmax )
     0.0e0
-    n floats col floats +do
-        arow i + f@ fabs fmax
+    floats over + swap +do
+        i f@ fabs fmax
     float +loop
 ;
-
-: absmax { a n row col -- }
-    a n row * floats + n col rowmax
+: scale-array { a b n -- }
+    n 0 +do
+        a n i * floats +
+        dup n rowmax 1.0e0 fswap f/
+        fdup n fa*
+        b i floats + f*!
+    loop
 ;
 
-: maxji { a n col -- piv }
-    0.0e0 col
-    n col +do
-        a i n * col + floats + f@ fabs
+: maxji { ai n len -- piv }
+    0.0e0 0
+    len 0 +do
+        ai i n * floats + f@ fabs
         fover fover f< if
             drop i
-            fswap
         then
-        fdrop
+        fmax
     loop
     fdrop
 ;
 
-: swap-array { a ind1 ind2 -- }
-    a ind1 floats +
-    a ind2 floats +
+: swap-array ( ai1 ai2 -- )
     2dup f@ f@ f! f!
 ;
-
-: swap-row { a row1 row2 n -- }
-    n row1 +do
-        a
-        n row1 * i +
-        n row2 * i + swap-array
-    loop
+: swap-row ( arow1 arow2 len -- )
+    floats over + swap +do
+        dup i swap-array
+        float+
+    float +loop
+    drop
 ;
-
-: pivot { a b n row -- }
-    a n row maxji
-    dup row <> if
-        dup a row rot swap-row
-        b row rot swap-array
+: pivot { ai bi n len -- }
+    ai n len maxji
+    dup if
+        dup n * floats ai + ai len swap-row
+        floats bi + bi swap-array
     else
         drop
     then
 ;
 
-: fa* { f: r arr n -- }
-    n floats 0 +do
-        arr i + dup f@ r f* f!
+: scale-pivot { ai bi len -- }
+    ai 1.0e0 dup f@ f/
+    fdup len fa*
+    bi f*!
+;
+
+: fa*- ( fr arr1 arr2 n -- )
+    floats over + swap float+ +do
+        float+
+        dup dup f@
+        fover
+        i f@
+        f* f- f!
     float +loop
+    drop fdrop
 ;
-: fa*- { f: r arr1 arr2 n col -- }
-    n floats col floats +do
-        arr1 i + dup f@
-        arr2 i + f@ r f* f- f!
-    float +loop
+: f*-! ( f: r addr1 addr2 -- )
+    f@ f* dup f@ fover f- f! fdrop
 ;
-
-: scale-pivot { a b n row -- }
-    a n row * row + floats + f@
-    1.0e0 fswap f/
-    n row +do
-        fdup
-        a n row * i + floats + f*!
-    loop
-    b row floats + f*!
-;
-
-: scale-array { a b n -- }
-    n 0 +do
-        a n i 0 absmax
-        1.0e0 fswap f/ fdup
-        a n i * floats + n fa*
-        b i floats + f*!
-    loop
-;
-
-: elim-col { a b n row -- }
-    n row 1+ +do
-        a i n * row + floats + f@ fdup
-
-        a i n * floats +
-        a row n * floats + n row 1+ fa*-
-        b i floats +
-        b row floats + 1 0 fa*-
+: elim-col { ai bi n len -- }
+    len 1 +do
+        ai i n * floats +
+        dup f@
+        fdup ai len fa*-
+        bi i floats + bi f*-!
     loop
 ;
 
 : forward-elimination { a b n -- }
     n 0 +do
-        a b n i pivot
-        a b n i scale-pivot
-        a b n i elim-col
+        a n 1+ i * floats +
+        b i floats +
+        2dup n n i - pivot
+        2dup n i - scale-pivot
+        n n i - elim-col
     loop
 ;
 
+: dot ( arr1 arr2 len )
+    0.0e0
+    floats over + swap +do
+        dup f@ i f@ f* f+
+        float+
+    float +loop
+    drop
+;
 : back-substitution { a b n -- }
     -1 n 1- -do
-        b i floats + f@
-        n i 1+ +do
-            a j n * i + floats + f@
-            b i floats + f@
-            f* f-
-        loop
-        b i floats + f!
+        b i floats +
+        dup f@
+        dup float+
+        a n 1+ i * 1+ floats + n i 1+ - dot f-
+        f!
     1 -loop
 ;
 
