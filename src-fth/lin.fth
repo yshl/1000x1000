@@ -14,7 +14,7 @@
         i f@ fabs fmax
     float +loop
 ;
-: scale-array { a b n -- }
+: scale-array { b a n -- }
     n 0 +do
         a n i * floats +
         dup n rowmax 1.0e0 fswap f/
@@ -45,7 +45,7 @@
     float +loop
     drop
 ;
-: pivot { ai bi n len -- }
+: pivot { bi ai n len -- }
     ai n len maxji
     dup if
         dup n * floats ai + ai len swap-row
@@ -55,10 +55,10 @@
     then
 ;
 
-: scale-pivot { ai bi len -- }
-    ai 1.0e0 dup f@ f/
-    fdup len fa*
-    bi f*!
+: scale-pivot ( bi ai len -- )
+    1.0e0 over f@ f/
+    fdup fa*
+    f*!
 ;
 
 : fa*- ( fr arr1 arr2 n -- )
@@ -74,7 +74,7 @@
 : f*-! ( f: r addr1 addr2 -- )
     f@ f* dup f@ fover f- f! fdrop
 ;
-: elim-col { ai bi n len -- }
+: elim-col { bi ai n len -- }
     len 1 +do
         ai i n * floats +
         dup f@
@@ -83,10 +83,10 @@
     loop
 ;
 
-: forward-elimination { a b n -- }
+: forward-elimination { b a n -- }
     n 0 +do
-        a n 1+ i * floats +
         b i floats +
+        a n 1+ i * floats +
         2dup n n i - pivot
         2dup n i - scale-pivot
         n n i - elim-col
@@ -101,18 +101,18 @@
     float +loop
     drop
 ;
-: back-substitution { a b n -- }
+: back-substitution { b a n -- }
     -1 n 1- -do
         b i floats +
         dup f@
         dup float+
-        a n 1+ i * 1+ floats + n i 1+ - dot f-
-        f!
+        a n 1+ i * 1+ floats + n i 1+ - dot
+        f- f!
     1 -loop
 ;
 
 : solve { a b n -- }
-    a b n scale-array
-    a b n forward-elimination
-    a b n back-substitution
+    b a n scale-array
+    b a n forward-elimination
+    b a n back-substitution
 ;
