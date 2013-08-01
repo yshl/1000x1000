@@ -51,10 +51,11 @@ private void forward_elimination(int N)(double[N][] a, size_t i, size_t blockend
     foreach(ref aj; a[blockend..$]){
 	size_t l;
 	for(l=i; l+blocksize<=blockend; l+=blocksize){
-	    aj[blockend..$]-=aj[l+0]*a[l+0][blockend..$]
-		+aj[l+1]*a[l+1][blockend..$]
-		+aj[l+2]*a[l+2][blockend..$]
-		+aj[l+3]*a[l+3][blockend..$];
+	    double ajl0=aj[l+0],ajl1=aj[l+1],ajl2=aj[l+2],ajl3=aj[l+3];
+	    foreach(k; blockend..N){
+		aj[k]-=ajl0*a[l+0][k]+ajl1*a[l+1][k]
+		    +ajl2*a[l+2][k]+ajl3*a[l+3][k];
+	    }
 	}
 	for(; l<blockend; l++){
 	    aj[blockend..$]-=aj[l]*a[l][blockend..$];

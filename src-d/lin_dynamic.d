@@ -60,7 +60,7 @@ private void forward_elimination(double[][] a, size_t i, size_t blockend)
 	    }
 	}
 	for(; l<blockend; l++){
-            aj[blockend..$]-=aj[l]*a[l][blockend..$];
+	    aj[blockend..$]-=aj[l]*a[l][blockend..$];
 	}
     }
 }
@@ -75,7 +75,7 @@ void solve(double[][] a, double[] b)
     }
     /* forward */
     size_t n=a.length;
-    size_t blocksize=16;
+    size_t blocksize=32;
     for(size_t i=0; i<n; i+=blocksize){
 	size_t blockend=min(i+blocksize,n);
 	update_lower_col(a,b,i,blockend);
