@@ -20,8 +20,9 @@
     (loop for j fixnum from (1+ i) below N do
 	  (let ((aji (abs (aref a j i))))
 	    (if (> aji ajimax)
-	      (setq ajimax aji)
-	      (setq maxj j))))
+	      (progn
+		(setq ajimax aji)
+		(setq maxj j)))))
     (if (/= i maxj)
       (progn
 	(loop for j fixnum from i below N do
