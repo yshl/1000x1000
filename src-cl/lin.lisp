@@ -32,13 +32,12 @@
 (defmacro mul-setf (a b)
   `(setf ,a (* ,a ,b)))
 
-(defun scale-pivot (a b i)
+(defun scale-pivot (a b i blockend)
   (declare (type (simple-array double-float (* *)) a)
 	   (type (simple-array double-float (*)) b)
-	   (type fixnum i))
-  (let ((n (array-dimension a 1))
-	(factor (/ 1.0d0 (aref a i i))))
-    (loop for j fixnum from (1+ i) below n do
+	   (type fixnum i blockend))
+  (let ((factor (/ 1.0d0 (aref a i i))))
+    (loop for j fixnum from (1+ i) below blockend do
 	  (mul-setf (aref a i j) factor))
     (mul-setf (aref b i) factor)))
 
@@ -49,31 +48,60 @@
     (loop for i fixnum from 0 below N do
 	  (let ((factor (/ 1.0d0 (absmax a i 0))))
 	    (loop for j fixnum from 0 to (1- N) do
-		  (mul-setf (aref a i j) factor ))
+		  (mul-setf (aref a i j) factor))
 	    (mul-setf (aref b i) factor)))))
 
 (defmacro sub-setf (a b)
   `(setf ,a (- ,a ,b)))
 
-(defun elim-col (a b i)
+(defun update-lower-col (a b i blockend)
   (declare (type (simple-array double-float (* *)) a)
 	   (type (simple-array double-float (*)) b)
-	   (type fixnum i))
+	   (type fixnum i blockend))
   (let ((n (array-dimension a 0)))
-    (loop for j fixnum from (1+ i) below n do
-	  (let ((aji (aref a j i)))
-	    (loop for k fixnum from (1+ i) below n do
-		  (sub-setf (aref a j k) (* aji (aref a i k))))
-	    (sub-setf (aref b j) (* aji (aref b i)))))))
+    (loop for i1 fixnum from i below blockend do
+	  (pivot a b i1)
+	  (scale-pivot a b i1 blockend)
+	  (loop for j fixnum from (1+ i1) below n do
+		(let ((aji (aref a j i1)))
+		  (loop for k fixnum from (+ i1 1) below blockend do
+			(sub-setf (aref a j k) (* aji (aref a i1 k))))
+		  (sub-setf (aref b j) (* aji (aref b i1))))))))
+
+(defun update-upper-row (a i blockend)
+  (declare (type (simple-array double-float (* *)) a)
+	   (type fixnum i blockend))
+  (let ((n (array-dimension a 0)))
+    (loop for i1 fixnum from i below blockend do
+	  (let ((factor (/ 1.0d0 (aref a i1 i1))))
+	    (loop for k fixnum from blockend below n do
+		  (mul-setf (aref a i1 k) factor)))
+	  (loop for j fixnum from (1+ i1) below blockend do
+		(let ((aji (aref a j i1)))
+		  (loop for k fixnum from blockend below n do
+			(sub-setf (aref a j k) (* aji (aref a i1 k)))))))))
+
+(defun update-a (a i blockend)
+  (declare (type (simple-array double-float (* *)) a)
+	   (type fixnum i blockend))
+  (let ((n (array-dimension a 0))
+	(blocksize 4))
+    (loop for i1 fixnum from blockend below n do
+	  (loop for j fixnum from i below blockend do
+		(let ((aij (aref a i1 j)))
+		  (loop for k fixnum from blockend below n do
+			(sub-setf (aref a i1 k) (* aij (aref a j k)))))))))
 
 (defun forward-elimination (a b)
   (declare (type (simple-array double-float (* *)) a)
 	   (type (simple-array double-float (*)) b))
-  (let ((n (array-dimension a 0)))
-    (dotimes (i n)
-      (pivot a b i)
-      (scale-pivot a b i)
-      (elim-col a b i))))
+  (let ((n (array-dimension a 0))
+	(blocksize 24))
+    (loop for i fixnum from 0 below n by blocksize do
+	  (let ((blockend (min n (+ i blocksize))))
+	    (update-lower-col a b i blockend)
+	    (update-upper-row a i blockend)
+	    (update-a a i blockend)))))
 
 (defun back-substitution (a b)
   (declare (type (simple-array double-float (* *)) a)
