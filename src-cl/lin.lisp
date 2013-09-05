@@ -87,10 +87,23 @@
   (let ((n (array-dimension a 0))
 	(blocksize 4))
     (loop for i1 fixnum from blockend below n do
-	  (loop for j fixnum from i below blockend do
-		(let ((aij (aref a i1 j)))
+	  (loop for j fixnum from i below blockend by blocksize do
+		(let ((aij0 (aref a i1 (+ j 0)))
+		      (aij1 (aref a i1 (+ j 1)))
+		      (aij2 (aref a i1 (+ j 2)))
+		      (aij3 (aref a i1 (+ j 3)))
+		      )
 		  (loop for k fixnum from blockend below n do
-			(sub-setf (aref a i1 k) (* aij (aref a j k)))))))))
+			(sub-setf (aref a i1 k) (* aij0 (aref a (+ j 0) k)))
+			(sub-setf (aref a i1 k) (* aij1 (aref a (+ j 1) k)))
+			(sub-setf (aref a i1 k) (* aij2 (aref a (+ j 2) k)))
+			(sub-setf (aref a i1 k) (* aij3 (aref a (+ j 3) k)))
+			)))
+	  (let ((jbegin (- blockend (mod (- blockend i) blocksize))))
+	    (loop for j fixnum from jbegin below blockend do
+		  (let ((aij (aref a i1 j)))
+		    (loop for k fixnum from blockend below n do
+			  (sub-setf (aref a i1 k) (* aij (aref a j k))))))))))
 
 (defun forward-elimination (a b)
   (declare (type (simple-array double-float (* *)) a)
