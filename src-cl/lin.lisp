@@ -20,9 +20,8 @@
     (loop for j fixnum from (1+ i) below N do
 	  (let ((aji (abs (aref a j i))))
 	    (if (> aji ajimax)
-	      (progn
-		(setq ajimax aji)
-		(setq maxj j)))))
+	      (setq ajimax aji
+		    maxj j))))
     (if (/= i maxj)
       (progn
 	(loop for j fixnum from i below N do
@@ -64,7 +63,7 @@
 	  (scale-pivot a b i1 blockend)
 	  (loop for j fixnum from (1+ i1) below n do
 		(let ((aji (aref a j i1)))
-		  (loop for k fixnum from (+ i1 1) below blockend do
+		  (loop for k fixnum from (1+ i1) below blockend do
 			(sub-setf (aref a j k) (* aji (aref a i1 k))))
 		  (sub-setf (aref b j) (* aji (aref b i1))))))))
 
