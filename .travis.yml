@@ -1,0 +1,36 @@
+addons:
+    apt:
+      packages:
+          - libatlas-base-dev
+          - liblapack-dev
+          - gfortran
+          - gcc
+          - g++
+          - sbcl
+          - ecl
+          - gforth
+          - default-jdk
+          - ocaml-nox
+          - chicken-bin
+          - r-base-core
+          - octave
+          - scilab
+
+before_install:
+    - wget http://downloads.dlang.org/releases/2.x/2.086.0/dmd_2.086.0-0_amd64.deb
+    - sudo dpkg -i dmd_2.086.0-0_amd64.deb
+    - wget ftp://ftp-sop.inria.fr/indes/fp/Bigloo/bigloo4.3e.tar.gz
+    - tar zxvf bigloo4.3e.tar.gz
+    - mkdir $HOME/opt
+    - cd bigloo4.3e
+    - ./configure --prefix=$HOME/opt
+    - make
+    - make install
+    - cd -
+    - export PATH=$PATH:$HOME/opt/bin
+
+install:
+    - make
+
+script:
+    - make test

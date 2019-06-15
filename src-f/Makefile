@@ -2,7 +2,7 @@ EXES=test_1_f test_lapack_1_f test_2_f test_lapack_2_f
 FC=gfortran
 F77=gfortran
 FFLAGS=-O3 -Wall
-LAPACKLIB=-lsatlas
+LAPACKLIB=-llapack -lblas
 
 .SUFFIXES: .f90
 .PHONY: test clean

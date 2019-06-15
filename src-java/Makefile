@@ -1,7 +1,6 @@
 EXES=Test_1.class
-JAVA_HOME=/usr/java/jdk
-JAVA=$(JAVA_HOME)/bin/java
-JAVAC=$(JAVA_HOME)/bin/javac
+JAVA=java
+JAVAC=javac
 JAVAFLAGS=
 
 .PHONY: test clean
