@@ -21,15 +21,17 @@ addons:
 before_install:
     - wget http://downloads.dlang.org/releases/2.x/2.086.0/dmd_2.086.0-0_amd64.deb
     - sudo dpkg -i dmd_2.086.0-0_amd64.deb
-    - sudo chicken install srfi-4-utils
-    - sudo chicken install vector-lib
+    - sudo chicken-install srfi-4-utils
+    - sudo chicken-install vector-lib
     - wget ftp://ftp-sop.inria.fr/indes/fp/Bigloo/bigloo4.3e.tar.gz
     - tar zxvf bigloo4.3e.tar.gz
     - mkdir $HOME/opt
     - cd bigloo4.3e
     - ./configure --prefix=$HOME/opt
     - make | tail -n 100
+    - if [ ${PIPESTATUS[0]} -ne 0 ]; then false fi
     - make install | tail
+    - if [ ${PIPESTATUS[0]} -ne 0 ]; then false fi
     - cd -
     - export PATH=$PATH:$HOME/opt/bin
 
