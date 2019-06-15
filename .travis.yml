@@ -1,5 +1,7 @@
+language: c
 addons:
     apt:
+      update: true
       packages:
           - libatlas-base-dev
           - libatlas-dev

@@ -2,7 +2,7 @@ EXES=test_array_1_c test_pointer_1_c test_lapack_1_c \
      test_array_2_c test_pointer_2_c test_lapack_2_c \
      test_array_rand_c test_pointer_rand_c
 CC=gcc
-CFLAGS=-O3 -Wall
+CFLAGS=-O3 -Wall -I/usr/include/atlas
 LAPACKLIB=-llapack -lblas
 LAPACKINC=
 
