@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<math.h>
 #include<cblas.h>
-#include<clapack.h>
+#include<lapacke.h>
 
 int main()
 {
@@ -37,7 +37,7 @@ int main()
 	ipiv[i]=0;
     }
     /* solve */
-    clapack_dgesv(CblasRowMajor, N, 1, a, N, ipiv, b, N);
+    LAPACKE_dgesv(CblasRowMajor, N, 1, a, N, ipiv, b, 1);
     /* output */
     maxerr=0.0;
     for(i=0; i<N; i++){

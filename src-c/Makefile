@@ -3,7 +3,7 @@ EXES=test_array_1_c test_pointer_1_c test_lapack_1_c \
      test_array_rand_c test_pointer_rand_c
 CC=gcc
 CFLAGS=-O3 -Wall
-LAPACKLIB=-lsatlas
+LAPACKLIB=-llapacke -llapack -lblas
 LAPACKINC=
 
 .PHONY: test clean
