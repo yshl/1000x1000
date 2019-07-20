@@ -2,6 +2,9 @@ using namespace std;
 #include<iostream>
 #include<cmath>
 #include<cstdlib>
+#ifndef BOOST_UBLAS_NDEBUG
+#define BOOST_UBLAS_NDEBUG
+#endif
 #include<boost/numeric/ublas/matrix.hpp>
 #include<boost/numeric/ublas/vector.hpp>
 #include<boost/numeric/ublas/lu.hpp>
