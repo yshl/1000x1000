@@ -6,4 +6,10 @@
 *.cmx
 *.cmo
 *.class
+*.jar
 *.db
+Makefile
+CMakeFiles
+CMakeCache.txt
+*.cmake
+Testing
